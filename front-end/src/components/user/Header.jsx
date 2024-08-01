@@ -3,9 +3,11 @@ import { CiHeart, CiShoppingCart, CiUser, CiSearch } from "react-icons/ci";
 import { FaBars } from "react-icons/fa6";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import logo from "../assets/active-edge-high-resolution-logo-black-transparent.png";
+import logo from "../../assets/active-edge-high-resolution-logo-black-transparent.png";
+import { useSelector } from "react-redux";
 
 const NavBar = () => {
+	const { user } = useSelector((state) => state.auth);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [searchVisible, setSearchVisible] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
@@ -142,7 +144,7 @@ const NavBar = () => {
 							<CiShoppingCart className="h-6 w-6" />
 						</Link>
 						<Link
-							to="/profile"
+							to={user ? "/profile" : "/login"}
 							className="ml-3 p-1 rounded-full text-black hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
 						>
 							<span className="sr-only">User</span>

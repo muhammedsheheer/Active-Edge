@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
+import Header from "../../components/user/Header";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
-import Footer from "../../components/Footer";
+import Footer from "../../components/user/Footer";
 import { setUser } from "../../../redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { validateLoginForm } from "../../utils/FormValidation";
@@ -32,12 +32,12 @@ const UserLogin = () => {
 		setErrors(formValidate);
 		if (Object.keys(formValidate).length === 0) {
 			try {
-				const response = await api.post("users/login", formData);
-				dispatch(setUser(response.data.userData));
-				toast.success(response.data.message);
-				response.data.userData.role === true
-					? navigate("/dashboard")
-					: navigate("/");
+				const res = await api.post("users/login", formData);
+				const { user, isAuthenticated, role } = res?.data;
+				dispatch(setUser({ user, isAuthenticated, role }));
+				toast.success(res?.data?.message);
+				console.log(res?.data?.role);
+				res?.data?.role === "admin" ? navigate("/dashboard") : navigate("/");
 			} catch (error) {
 				toast.error(error.response.data.message);
 			}

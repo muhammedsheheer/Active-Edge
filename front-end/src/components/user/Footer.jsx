@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/active-edge-high-resolution-logo-white-transparent.png";
+import logo from "../../assets/active-edge-high-resolution-logo-white-transparent.png";
 import {
 	FaFacebookSquare,
 	FaLinkedin,

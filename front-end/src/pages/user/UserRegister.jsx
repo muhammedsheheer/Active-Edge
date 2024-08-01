@@ -8,7 +8,7 @@ import {
 	FaEye,
 	FaEyeSlash,
 } from "react-icons/fa";
-import Header from "../../components/Header";
+import Header from "../../components/user/Header";
 import { validateRegisterForm } from "../../utils/FormValidation";
 import api from "../../config/axiosConfig";
 import { toast } from "react-toastify";
