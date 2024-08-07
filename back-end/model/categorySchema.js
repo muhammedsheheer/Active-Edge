@@ -2,17 +2,36 @@ import mongoose from "mongoose";
 
 const categorySchema = mongoose.Schema(
 	{
-		categoryName: { type: String, required: true, unique: true },
+		categoryName: {
+			type: String,
+			required: true,
+			unique: true,
+		},
 		description: {
 			type: String,
-			required: false,
 		},
-		status: { type: Boolean, required: true, default: true },
+		status: {
+			type: Boolean,
+			required: true,
+			default: true,
+		},
 	},
 	{
 		timestamps: true,
 	}
 );
 
+const capitalizeFirstLetter = (string) => {
+	return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
+
+categorySchema.pre("save", function (next) {
+	if (this.categoryName) {
+		this.categoryName = capitalizeFirstLetter(this.categoryName);
+	}
+	next();
+});
+
 const Category = mongoose.model("Category", categorySchema);
+
 export default Category;

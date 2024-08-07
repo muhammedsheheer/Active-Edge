@@ -75,7 +75,7 @@ const OTPVerification = () => {
 				email: userEmail,
 			});
 			toast.success(response.data.message);
-			setCounter(60); // Reset timer to 60 seconds
+			setCounter(60);
 		} catch (error) {
 			console.log(error);
 			toast.error(error.response.data.message);

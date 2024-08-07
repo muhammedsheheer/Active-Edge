@@ -4,7 +4,6 @@ const userSchema = mongoose.Schema(
 	{
 		name: {
 			type: String,
-			required: true,
 		},
 		email: {
 			type: String,
@@ -13,21 +12,19 @@ const userSchema = mongoose.Schema(
 		},
 		phone: {
 			type: Number,
-			required: true,
 		},
 		password: {
 			type: String,
-			required: true,
 		},
 		role: {
 			type: String,
-			required: true,
 			default: "user",
 		},
 		isVerified: {
 			type: Boolean,
 			default: false,
 		},
+		dpImage: { type: String, required: false },
 	},
 	{
 		timestamps: true,

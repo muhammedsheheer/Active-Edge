@@ -17,7 +17,7 @@ const isAuth = (req, res, next) => {
 };
 
 const isAuthAdmin = (req, res, next) => {
-	if (req.user && req.user.role) {
+	if (req.user && req.user.role === "admin") {
 		next();
 	} else {
 		console.log(req.user);

@@ -38,7 +38,7 @@ const SideNavbar = () => {
 						</li>
 						<li className="text-gray-600 font-semibold hover:text-black">
 							{" "}
-							<Link to={"#"}>Customers</Link>
+							<Link to={"customers"}>Customers</Link>
 						</li>
 						<li className="text-gray-600 font-semibold hover:text-black">
 							{" "}

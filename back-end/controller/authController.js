@@ -37,7 +37,7 @@ const registerUser = async (req, res) => {
 			specialChars: false,
 		});
 
-		console.log(`Generated OTP: ${otp}`); // Debugging: Log the generated OTP
+		console.log(`Generated OTP: ${otp}`);
 
 		const otpData = new Otp({ email, otp });
 		await otpData.save();
@@ -53,7 +53,6 @@ const registerUser = async (req, res) => {
 const verifiOtp = async (req, res) => {
 	try {
 		const { otp } = req.body;
-		console.log("Verifying OTP:", otp); // Debugging: Log the OTP being verified
 
 		const otpData = await Otp.findOne({ otp });
 		if (!otpData) {
@@ -99,8 +98,6 @@ const resendOtp = async (req, res) => {
 			lowerCaseAlphabets: false,
 			specialChars: false,
 		});
-
-		console.log(`Resent OTP: ${otp}`); // Debugging: Log the resent OTP
 
 		const otpData = new Otp({ email, otp });
 		await otpData.save();

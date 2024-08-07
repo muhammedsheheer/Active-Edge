@@ -15,6 +15,9 @@ import ProtectedAdminRoute from "./utils/ProtectedAdminRoute";
 import AuthanticateRoute from "./utils/Authantication";
 import ProtectedUserRoute from "./utils/ProtectedUserRoute";
 import UserLayout from "./layout/UserLayout";
+import ProductForm from "./components/admin/ProductForm";
+import ProductDetailPage from "./pages/user/ProductDetailPage";
+import Customers from "./pages/admin/customers/Customer.jsx";
 
 function App() {
 	return (
@@ -28,6 +31,7 @@ function App() {
 				</Route>
 				<Route element={<UserLayout />}>
 					<Route index path="/" element={<HomePage />} />
+					<Route path="/productDetials/:id" element={<ProductDetailPage />} />
 					<Route element={<ProtectedUserRoute />}>
 						<Route path="/profile" element={<Profile />} />
 						<Route path="/cart" element={<Cart />} />
@@ -38,7 +42,10 @@ function App() {
 				<Route element={<ProtectedAdminRoute />}>
 					<Route path="/dashboard" element={<AdminLayout />}>
 						<Route path="products" element={<Product />} />
+						<Route path="addNewProduct" element={<ProductForm />} />
+						<Route path="editproduct/:productId" element={<ProductForm />} />
 						<Route path="categorys" element={<Category />} />
+						<Route path="customers" element={<Customers />} />
 					</Route>
 				</Route>
 			</Routes>

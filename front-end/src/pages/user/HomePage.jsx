@@ -1,6 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import ProductCard from "../../components/user/ProductCard";
+import ProductDetails from "../../components/user/ProductsDetails";
+import api from "../../config/axiosConfig";
 
 const HomePage = () => {
+	const [newProducts, setNewProducts] = useState([]);
+
+	const fetchProducts = async () => {
+		try {
+			const response = await api.get("/product/getProducts");
+			setNewProducts(response?.data?.products);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchProducts();
+	}, []);
+
 	const bestSellingJerseys = [
 		{ name: "Arsenal Jersey", price: "$89.99" },
 		{ name: "Manchester United Jersey", price: "$94.99" },
@@ -26,6 +44,11 @@ const HomePage = () => {
 
 	return (
 		<div className="container mx-auto px-4">
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+				{newProducts?.map((product) => (
+					<ProductCard key={product._id} productData={product} />
+				))}
+			</div>
 			{/* Hero Section */}
 			<div className="bg-yellow-400 text-black p-8 mb-8 rounded-lg flex flex-col md:flex-row items-center">
 				<div className="md:w-1/2">

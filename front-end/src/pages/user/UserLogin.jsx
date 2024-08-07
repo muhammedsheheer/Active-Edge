@@ -39,7 +39,7 @@ const UserLogin = () => {
 				console.log(res?.data?.role);
 				res?.data?.role === "admin" ? navigate("/dashboard") : navigate("/");
 			} catch (error) {
-				toast.error(error.response.data.message);
+				toast.error("user not");
 			}
 		}
 	};
@@ -86,7 +86,7 @@ const UserLogin = () => {
 								onClick={togglePasswordVisibility}
 								className="absolute inset-y-0 right-0 flex items-center px-2"
 							>
-								{showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle icon */}
+								{showPassword ? <FaEyeSlash /> : <FaEye />}
 							</button>
 						</div>
 						{errors.password && (

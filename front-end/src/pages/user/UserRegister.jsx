@@ -129,7 +129,7 @@ const UserRegister = () => {
 								onClick={togglePasswordVisibility}
 								className="absolute inset-y-0 right-0 flex items-center px-2"
 							>
-								{showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle icon */}
+								{showPassword ? <FaEyeSlash /> : <FaEye />}
 							</button>
 						</div>
 						{errors.password && (
@@ -150,7 +150,7 @@ const UserRegister = () => {
 								onClick={toggleCPasswordVisibility}
 								className="absolute inset-y-0 right-0 flex items-center px-2"
 							>
-								{showCPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle icon */}
+								{showCPassword ? <FaEyeSlash /> : <FaEye />}
 							</button>
 						</div>
 						{errors.cPassword && (
