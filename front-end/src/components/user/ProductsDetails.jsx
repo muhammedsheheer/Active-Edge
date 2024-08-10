@@ -1,19 +1,64 @@
 import React, { useEffect, useState } from "react";
 import Magnifier from "react-magnifier";
 import api from "../../config/axiosConfig";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import RelatedProduct from "./RelatedProduct";
+import { useDispatch, useSelector } from "react-redux";
+import { handleWishlist } from "../../../redux/slices/wishlistSlice";
+import { toast } from "react-toastify";
 
 const ProductsDetails = () => {
+	const { user } = useSelector((state) => state.auth);
+	const userId = user;
 	const [product, setProduct] = useState(null);
 	const [mainImage, setMainImage] = useState("");
 	const [loading, setLoading] = useState(true);
-
+	const dispatch = useDispatch();
 	const { id } = useParams();
+	const navigate = useNavigate();
+
+	const [wishlist, setWishlist] = useState([]);
 
 	useEffect(() => {
 		fetchProductDetails();
 	}, [id]);
+
+	useEffect(() => {
+		// Retrieve wishlist from local storage
+		const savedWishlist =
+			JSON.parse(localStorage.getItem(`wishlist_${userId}`)) || [];
+		setWishlist(savedWishlist);
+	}, [userId]);
+
+	const isInWishlist = product && wishlist.includes(product._id);
+
+	const handleWish = () => {
+		if (!userId) {
+			// Notify the user to log in
+			toast.error("Please log in to add items to your wishlist.");
+			navigate("/login"); // Redirect to login page if needed
+			return;
+		}
+
+		if (isInWishlist) {
+			// Remove from wishlist
+			const updatedWishlist = wishlist.filter((id) => id !== product._id);
+			localStorage.setItem(
+				`wishlist_${userId}`,
+				JSON.stringify(updatedWishlist)
+			);
+			setWishlist(updatedWishlist);
+		} else {
+			// Add to wishlist
+			const updatedWishlist = [...wishlist, product._id];
+			localStorage.setItem(
+				`wishlist_${userId}`,
+				JSON.stringify(updatedWishlist)
+			);
+			setWishlist(updatedWishlist);
+		}
+		dispatch(handleWishlist({ userId, productId: product._id }));
+	};
 
 	const fetchProductDetails = async () => {
 		try {
@@ -134,12 +179,13 @@ const ProductsDetails = () => {
 						</button>
 						<button
 							className={
-								product?.status
-									? "border px-4 py-2 text-sm"
-									: "border bg-gray-200 px-4 py-2 text-sm cursor-not-allowed"
+								isInWishlist
+									? "border border-red-500 px-4 py-2 text-sm text-red-500"
+									: "border px-4 py-2 text-sm"
 							}
+							onClick={handleWish}
 						>
-							ADD TO WISHLIST
+							{isInWishlist ? "REMOVE FROM WISHLIST" : "ADD TO WISHLIST"}
 						</button>
 					</div>
 				</div>

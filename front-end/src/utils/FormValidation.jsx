@@ -56,16 +56,85 @@ export const validateRegisterForm = (input) => {
 };
 
 // utils/validateForms.js
+// export const validateProductForm = (inputField) => {
+// 	const newError = {};
+// 	if (!inputField.productName) newError.productName = "is required*";
+// 	if (!inputField.description) newError.description = "is required*";
+// 	if (!inputField.category) newError.category = "is required*";
+// 	if (!inputField.brand) newError.brand = "is required*";
+// 	if (!inputField.gender) newError.gender = "is required*";
+// 	if (!inputField.stock) newError.stock = "is required*";
+// 	if (!inputField.regularPrice) newError.regularPrice = "is required";
+// 	if (!inputField.salePrice) newError.salePrice = "is required";
+
+// 	return newError;
+// };
+
+// utils/validateForms.js
+// utils/validateForms.js
 export const validateProductForm = (inputField) => {
 	const newError = {};
-	if (!inputField.productName) newError.productName = "is required*";
-	if (!inputField.description) newError.description = "is required*";
-	if (!inputField.category) newError.category = "is required*";
-	if (!inputField.brand) newError.brand = "is required*";
-	if (!inputField.gender) newError.gender = "is required*";
-	if (!inputField.stock) newError.stock = "is required*";
-	if (!inputField.regularPrice) newError.regularPrice = "is required";
-	if (!inputField.salePrice) newError.salePrice = "is required";
+
+	// Validate string inputs
+	const validateStringField = (field, fieldName) => {
+		const trimmedField = field?.trim();
+		if (!trimmedField) {
+			newError[fieldName] = `${fieldName.replace(
+				/([A-Z])/g,
+				" $1"
+			)} is required*`;
+		}
+	};
+
+	validateStringField(inputField.productName, "productName");
+	validateStringField(inputField.description, "description");
+	validateStringField(inputField.category, "category");
+	validateStringField(inputField.brand, "brand");
+	validateStringField(inputField.gender, "gender");
+
+	// Validate number inputs
+	const validateNumberField = (field, fieldName) => {
+		if (field == null) {
+			newError[fieldName] = `${fieldName.replace(
+				/([A-Z])/g,
+				" $1"
+			)} is required*`;
+		} else if (isNaN(field) || Number(field) < 0) {
+			newError[fieldName] = `${fieldName.replace(
+				/([A-Z])/g,
+				" $1"
+			)} must be a non-negative number*`;
+		}
+	};
+
+	validateNumberField(inputField.stock, "stock");
+	validateNumberField(inputField.regularPrice, "regularPrice");
+
+	// Validate sale price if it is provided
+	if (inputField.salePrice != null) {
+		validateNumberField(inputField.salePrice, "salePrice");
+	}
+
+	// Validate sizes array
+	if (Array.isArray(inputField.sizes) && inputField.sizes.length > 0) {
+		inputField.sizes.forEach((sizeObj, index) => {
+			const trimmedSize = sizeObj.size?.trim();
+			if (!trimmedSize) {
+				newError[`sizes[${index}].size`] = `Size is required*`;
+			}
+			if (
+				sizeObj.stock == null ||
+				isNaN(sizeObj.stock) ||
+				Number(sizeObj.stock) < 0
+			) {
+				newError[
+					`sizes[${index}].stock`
+				] = `Size stock must be a non-negative number*`;
+			}
+		});
+	} else {
+		newError.sizes = "At least one size is required*";
+	}
 
 	return newError;
 };

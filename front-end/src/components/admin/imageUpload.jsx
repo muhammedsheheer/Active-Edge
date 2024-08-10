@@ -27,6 +27,10 @@ const ImageUploadSection = ({ onImageData, editingImage }) => {
 		}
 	}, [editingImage]);
 
+	useEffect(() => {
+		onImageData({ thumbnail, galleryImages });
+	}, [thumbnail, galleryImages]);
+
 	const handleThumbnailUpload = (file) => {
 		if (file && validImageType.includes(file.type)) {
 			const reader = new FileReader();
@@ -107,10 +111,6 @@ const ImageUploadSection = ({ onImageData, editingImage }) => {
 		}
 		setIsCropping(false);
 	};
-
-	useEffect(() => {
-		onImageData({ thumbnail, galleryImages });
-	}, []);
 
 	return (
 		<div className="w-full max-w-md mx-auto">

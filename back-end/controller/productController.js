@@ -1,72 +1,6 @@
 import Products from "../model/productSchema.js";
 import { uploadImage, uploadMultipleImages } from "../utils/imageUplode.js";
 
-// const createProduct = async (req, res) => {
-// 	try {
-// 		const {
-// 			thumbnail,
-// 			galleryImages,
-// 			productName,
-// 			description,
-// 			category,
-// 			brand,
-// 			gender,
-// 			stock,
-// 			regularPrice,
-// 			salePrice,
-// 			sizes,
-// 			status,
-// 		} = req.body;
-
-// 		if (
-// 			!productName ||
-// 			!description ||
-// 			!category ||
-// 			!brand ||
-// 			!gender ||
-// 			!stock ||
-// 			!regularPrice ||
-// 			!salePrice ||
-// 			!sizes
-// 		) {
-// 			return res.status(400).json({ message: "All fields are required" });
-// 		}
-
-// 		const thumbnailUrl = await uploadImage(
-// 			thumbnail,
-// 			"myProducts/thumbnail",
-// 			600,
-// 			600
-// 		);
-// 		const galleryImageUrls = await uploadMultipleImages(
-// 			galleryImages,
-// 			"myProducts/thumbnail",
-// 			600,
-// 			600
-// 		);
-
-// 		const newProduct = new Products({
-// 			productName,
-// 			description,
-// 			category,
-// 			brand,
-// 			gender,
-// 			stock,
-// 			regularPrice,
-// 			salePrice,
-// 			sizes,
-// 			thumbnail: thumbnailUrl,
-// 			gallery: galleryImageUrls,
-// 			status,
-// 		});
-// 		const products = await newProduct.save();
-// 		return res.status(200).json({ message: "Product added Successfully" });
-// 	} catch (error) {
-// 		console.log(error);
-// 		return res.status(500).json({ error });
-// 	}
-// };
-
 const createProduct = async (req, res) => {
 	try {
 		const {
@@ -84,7 +18,6 @@ const createProduct = async (req, res) => {
 			status,
 		} = req.body;
 
-		// Validate required fields
 		if (
 			!productName ||
 			!description ||
@@ -99,7 +32,6 @@ const createProduct = async (req, res) => {
 			return res.status(400).json({ message: "All fields are required" });
 		}
 
-		// Handle image upload
 		let thumbnailUrl;
 		let galleryImageUrls = [];
 
@@ -123,7 +55,6 @@ const createProduct = async (req, res) => {
 				.json({ message: "Image upload failed", error: imageError });
 		}
 
-		// Create new product
 		const newProduct = new Products({
 			productName,
 			description,
@@ -139,14 +70,16 @@ const createProduct = async (req, res) => {
 			status,
 		});
 
-		// Save product to database
 		const product = await newProduct.save();
 		return res
 			.status(200)
 			.json({ message: "Product added Successfully", product });
 	} catch (error) {
-		console.error("Error creating product:", error);
-		return res.status(500).json({ message: "Internal server error", error });
+		if (error.code === 11000) {
+			return res.status(400).json({ message: "Product already exists" });
+		} else {
+			return res.status(500).json({ message: error.message });
+		}
 	}
 };
 
@@ -260,7 +193,11 @@ const updateProduct = async (req, res) => {
 			.status(200)
 			.json({ message: "Updated Successfully", product: updatedProduct });
 	} catch (error) {
-		return res.status(500).json({ message: "Something went wrong" });
+		if (error.code === 11000) {
+			return res.status(400).json({ message: "Product already exists" });
+		} else {
+			return res.status(500).json({ message: error.message });
+		}
 	}
 };
 

@@ -39,7 +39,7 @@ const UserLogin = () => {
 				console.log(res?.data?.role);
 				res?.data?.role === "admin" ? navigate("/dashboard") : navigate("/");
 			} catch (error) {
-				toast.error("user not");
+				toast.error(error.message);
 			}
 		}
 	};
