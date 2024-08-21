@@ -1,16 +1,25 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { CiHeart, CiShoppingCart, CiUser, CiSearch } from "react-icons/ci";
 import { FaBars } from "react-icons/fa6";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import logo from "../../assets/active-edge-high-resolution-logo-black-transparent.png";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+// import { getCarItems } from "../../../redux/slices/cartSlice";
 
 const NavBar = () => {
 	const { user } = useSelector((state) => state.auth);
+	const items = useSelector((state) => state.cart?.cartItems?.items);
+	const dispatch = useDispatch();
+
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [searchVisible, setSearchVisible] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
+	const cartItemCount = items?.length;
+
+	// useEffect(() => {
+	// 	dispatch(getCarItems());
+	// }, [dispatch]);
 
 	const inputRef = useRef(null);
 
@@ -29,7 +38,6 @@ const NavBar = () => {
 
 	const handleSearchSubmit = (event) => {
 		event.preventDefault();
-
 		console.log("Searching for:", searchTerm);
 		setSearchTerm("");
 		setSearchVisible(false);
@@ -41,10 +49,14 @@ const NavBar = () => {
 		}
 	};
 
-	React.useEffect(() => {
+	useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
+
+	const handleMobileMenuItemClick = () => {
+		setMobileMenuOpen(false);
+	};
 
 	return (
 		<nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
@@ -87,16 +99,22 @@ const NavBar = () => {
 									SHOP
 								</Link>
 								<Link
-									to="/about"
+									to="/men"
 									className="text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
 								>
-									ABOUT
+									MENS
 								</Link>
 								<Link
-									to="/contact"
+									to="/women"
 									className="text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
 								>
-									CONTACT
+									WOMENS
+								</Link>
+								<Link
+									to="/kids"
+									className="text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+								>
+									KIDS
 								</Link>
 							</div>
 						</div>
@@ -138,10 +156,15 @@ const NavBar = () => {
 						</Link>
 						<Link
 							to="/cart"
-							className="ml-3 p-1 rounded-full text-black hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+							className="relative ml-3 p-1 rounded-full text-black hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
 						>
 							<span className="sr-only">Cart</span>
 							<CiShoppingCart className="h-6 w-6" />
+							{cartItemCount > 0 && (
+								<span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-medium text-white bg-red-500 rounded-full">
+									{cartItemCount}
+								</span>
+							)}
 						</Link>
 						<Link
 							to={user ? "/profile" : "/login"}
@@ -162,26 +185,37 @@ const NavBar = () => {
 					<Link
 						to="/"
 						className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+						onClick={handleMobileMenuItemClick}
 					>
 						HOME
 					</Link>
 					<Link
 						to="/shop"
 						className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+						onClick={handleMobileMenuItemClick}
 					>
 						SHOP
 					</Link>
 					<Link
-						to="/about"
+						to="/men"
 						className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+						onClick={handleMobileMenuItemClick}
 					>
-						ABOUT
+						MENS
 					</Link>
 					<Link
-						to="/contact"
+						to="/women"
 						className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+						onClick={handleMobileMenuItemClick}
 					>
-						CONTACT
+						WOMENS
+					</Link>
+					<Link
+						to="/kids"
+						className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+						onClick={handleMobileMenuItemClick}
+					>
+						KIDS
 					</Link>
 				</div>
 			</div>

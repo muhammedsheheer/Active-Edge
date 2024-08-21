@@ -63,7 +63,7 @@ const UserRegister = () => {
 		<>
 			<Header />
 
-			<div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+			<div className="flex items-center justify-center min-h-screen bg-gray-100 px-4 mt-10">
 				<div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
 					<h2 className="text-2xl font-bold mb-2 text-center">
 						Let's Get Started!

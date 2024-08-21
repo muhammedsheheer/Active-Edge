@@ -18,6 +18,15 @@ import UserLayout from "./layout/UserLayout";
 import ProductForm from "./components/admin/ProductForm";
 import ProductDetailPage from "./pages/user/ProductDetailPage";
 import Customers from "./pages/admin/customers/Customer.jsx";
+import AddressForm from "./components/user/AddressForm.jsx";
+import EditProfile from "./components/user/EditProfile.jsx";
+import Women from "./pages/user/Women.jsx";
+import CheckOutPage from "./pages/user/CheckOutPage.jsx";
+import PaymentPage from "./pages/user/PaymentPage.jsx";
+import OrderConfirmation from "./pages/user/OrderConfirmation.jsx";
+import OrderHistory from "./pages/user/OrderHistory.jsx";
+import Order from "./pages/admin/order/Order.jsx";
+import OrderDetails from "./pages/admin/order/OrderDetails.jsx";
 
 function App() {
 	return (
@@ -32,10 +41,17 @@ function App() {
 				<Route element={<UserLayout />}>
 					<Route index path="/" element={<HomePage />} />
 					<Route path="/productDetials/:id" element={<ProductDetailPage />} />
+					<Route path="/women" element={<Women />} />
 					<Route element={<ProtectedUserRoute />}>
 						<Route path="/profile" element={<Profile />} />
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/wishlist" element={<Wishlist />} />
+						<Route path="/addressform" element={<AddressForm />} />
+						<Route path="/editprofile" element={<EditProfile />} />
+						<Route path="/checkOut" element={<CheckOutPage />} />
+						<Route path="/payment" element={<PaymentPage />} />
+						<Route path="/confirmation" element={<OrderConfirmation />} />
+						<Route path="/orderHistory" element={<OrderHistory />} />
 					</Route>
 				</Route>
 				{/* {admin routes} */}
@@ -46,6 +62,8 @@ function App() {
 						<Route path="editproduct/:productId" element={<ProductForm />} />
 						<Route path="categorys" element={<Category />} />
 						<Route path="customers" element={<Customers />} />
+						<Route path="orderDetails/:id" element={<OrderDetails />} />
+						<Route path="orders" element={<Order />} />
 					</Route>
 				</Route>
 			</Routes>

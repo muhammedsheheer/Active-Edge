@@ -1,63 +1,101 @@
 import React, { useEffect, useState } from "react";
 import Magnifier from "react-magnifier";
 import api from "../../config/axiosConfig";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import RelatedProduct from "./RelatedProduct";
 import { useDispatch, useSelector } from "react-redux";
-import { handleWishlist } from "../../../redux/slices/wishlistSlice";
+import {
+	handleWishlist,
+	getWishlist,
+} from "../../../redux/slices/wishlistSlice";
 import { toast } from "react-toastify";
+import { addCartItems, getCarItems } from "../../../redux/slices/cartSlice";
 
 const ProductsDetails = () => {
+	const wishlist = useSelector((state) => state.wishlist.products) || [];
+	const cartItems = useSelector((state) => state.cart.cartItems);
 	const { user } = useSelector((state) => state.auth);
 	const userId = user;
 	const [product, setProduct] = useState(null);
 	const [mainImage, setMainImage] = useState("");
 	const [loading, setLoading] = useState(true);
+	const [selectSize, setSelectSize] = useState(null);
+	const [isInCart, setIsInCart] = useState(
+		cartItems.items?.some((item) => item.productId._id === product?._id) ||
+			false
+	);
+	console.log("is in cart ", isInCart);
+
+	const [error, setError] = useState("");
 	const dispatch = useDispatch();
 	const { id } = useParams();
 	const navigate = useNavigate();
 
-	const [wishlist, setWishlist] = useState([]);
+	console.log("is in cart", isInCart);
 
+	const checkIsInCart = () => {
+		return cartItems.items?.some((item) => item.productId._id === product?._id);
+	};
+
+	useEffect(() => {
+		if (user) {
+			dispatch(getCarItems());
+		}
+	}, [dispatch]);
+
+	useEffect(() => {
+		if (product && cartItems.items) {
+			setIsInCart(checkIsInCart());
+		}
+	}, [product, cartItems]);
+
+	const handleAddToCart = async () => {
+		if (!selectSize) {
+			setError("Please select size");
+			return;
+		}
+		setError("");
+		try {
+			dispatch(
+				addCartItems({
+					productId: product._id,
+					size: selectSize,
+				})
+			);
+			toast.success("Added to cart successfully");
+			setIsInCart(!isInCart);
+		} catch (error) {
+			console.log(error);
+			toast.error("Faild to add");
+		}
+	};
 	useEffect(() => {
 		fetchProductDetails();
 	}, [id]);
 
 	useEffect(() => {
-		// Retrieve wishlist from local storage
-		const savedWishlist =
-			JSON.parse(localStorage.getItem(`wishlist_${userId}`)) || [];
-		setWishlist(savedWishlist);
-	}, [userId]);
+		dispatch(getWishlist(userId));
+	}, [dispatch, userId]);
 
-	const isInWishlist = product && wishlist.includes(product._id);
+	useEffect(() => {
+		if (product) {
+			setIsInWishlist(wishlist.some((item) => item._id === product._id));
+		}
+	}, [wishlist, product]);
+
+	const [isInWishlist, setIsInWishlist] = useState(false);
+	console.log("is in wishlist", isInWishlist);
 
 	const handleWish = () => {
 		if (!userId) {
-			// Notify the user to log in
 			toast.error("Please log in to add items to your wishlist.");
-			navigate("/login"); // Redirect to login page if needed
+			navigate("/login");
 			return;
 		}
 
-		if (isInWishlist) {
-			// Remove from wishlist
-			const updatedWishlist = wishlist.filter((id) => id !== product._id);
-			localStorage.setItem(
-				`wishlist_${userId}`,
-				JSON.stringify(updatedWishlist)
-			);
-			setWishlist(updatedWishlist);
-		} else {
-			// Add to wishlist
-			const updatedWishlist = [...wishlist, product._id];
-			localStorage.setItem(
-				`wishlist_${userId}`,
-				JSON.stringify(updatedWishlist)
-			);
-			setWishlist(updatedWishlist);
-		}
-		dispatch(handleWishlist({ userId, productId: product._id }));
+		dispatch(handleWishlist({ userId, productId: product._id })).then(() => {
+			setIsInWishlist(!isInWishlist);
+		});
 	};
 
 	const fetchProductDetails = async () => {
@@ -90,7 +128,6 @@ const ProductsDetails = () => {
 			</div>
 			<div className="container mx-auto p-4 max-w-screen-lg">
 				<div className="flex flex-col md:flex-row md:space-x-4">
-					{/* Thumbnails */}
 					<div className="flex flex-wrap md:flex-col md:space-y-2 space-x-2 md:space-x-0">
 						{product?.gallery.map((image, index) => (
 							<img
@@ -102,7 +139,6 @@ const ProductsDetails = () => {
 							/>
 						))}
 					</div>
-					{/* Main Image */}
 					<div className="md:w-3/4 flex justify-center items-center mt-4 md:mt-0">
 						<div>
 							{loading ? (
@@ -122,21 +158,24 @@ const ProductsDetails = () => {
 					<h1 className="text-xl font-bold">{product?.productName}</h1>
 					<p className="text-gray-500">5k Reviews</p>
 					<div className="flex justify-center items-center space-x-2 mt-2">
-						<span className="text-lg font-bold">${product?.regularPrice}</span>
+						<span className="text-lg font-bold">${product?.salePrice}</span>
 						<span className="line-through text-gray-500">
-							${product?.salePrice}
+							${product?.regularPrice}
 						</span>
 					</div>
 					<p className="mt-4 text-sm">{product?.description}</p>
 
-					{/* Size selection */}
 					<div className="flex flex-wrap gap-2 mt-2 justify-center">
 						<span className="m-1 text-lg font-medium">Size:</span>
 						{product?.sizes?.map((size) => (
 							<div key={size._id} className="text-center">
 								<button
-									className="px-4 py-2 border rounded-lg focus:outline-none"
+									key={size}
+									className={`px-4 py-2 border rounded-lg focus:outline-none ${
+										selectSize === size.size ? "bg-black text-white" : " "
+									}`}
 									disabled={size.stock === 0}
+									onClick={() => setSelectSize(size.size)}
 								>
 									{size?.size}
 								</button>
@@ -152,6 +191,7 @@ const ProductsDetails = () => {
 							</div>
 						))}
 					</div>
+					<div className="text-red-600">{error}</div>
 					<div className="mt-4 flex items-center justify-center gap-4">
 						<h1 className="font-semibold text-xl text-gray-600">
 							Availability :
@@ -165,18 +205,34 @@ const ProductsDetails = () => {
 						</p>
 					</div>
 
-					{/* Action buttons */}
 					<div className="flex justify-center mt-4 space-x-2">
-						<button
-							className={
-								product?.status
-									? "bg-black text-white px-4 py-2 text-sm"
-									: "bg-gray-200 text-black px-4 py-2 text-sm cursor-not-allowed"
-							}
-							disabled={!product?.status}
-						>
-							ADD TO CART
-						</button>
+						{!isInCart ? (
+							<button
+								className={
+									product?.status
+										? "bg-black text-white px-4 py-2 text-sm"
+										: "bg-gray-200 text-black px-4 py-2 text-sm cursor-not-allowed"
+								}
+								disabled={!product?.status}
+								onClick={handleAddToCart}
+							>
+								ADD TO CART
+							</button>
+						) : (
+							<Link to="/cart">
+								<button
+									className={
+										product?.status
+											? "bg-black text-white px-4 py-2 text-sm"
+											: "bg-gray-200 text-black px-4 py-2 text-sm cursor-not-allowed"
+									}
+									disabled={!product?.status}
+								>
+									GO TO CART
+								</button>
+							</Link>
+						)}
+
 						<button
 							className={
 								isInWishlist

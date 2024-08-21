@@ -4,9 +4,7 @@ import { uploadImage } from "../utils/imageUplode.js";
 const createBrand = async (req, res) => {
 	try {
 		const { brandName, brandTitle, logo } = req.body;
-		console.log("the brand body details", req.body);
 		const logoUrl = await uploadImage(logo, "mybrandImages", 200, 200, "fill");
-		console.log("logo image", logoUrl);
 		if (!brandName) {
 			return res.status(400).json({ message: "Brand name is required" });
 		}
@@ -20,7 +18,6 @@ const createBrand = async (req, res) => {
 			logo: logoUrl,
 		});
 		const brandData = await brand.save();
-		console.log("The brand dats ", brandData);
 		return res.status(200).json({ message: "Brand added successfully" });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });

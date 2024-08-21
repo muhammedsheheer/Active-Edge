@@ -19,6 +19,7 @@ const ProductForm = () => {
 
 	const { productId } = useParams();
 	const [isEditing, setIsEditing] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	const [errors, setErrors] = useState({});
 	// const [totalStock, setTotalStock] = useState(0);
@@ -128,43 +129,45 @@ const ProductForm = () => {
 	const submitProductForm = async () => {
 		const validateForm = validateProductForm(formData);
 		setErrors(validateForm);
-		if (Object.keys(validateForm).length === 0)
-			try {
-				const data = { ...formData, ...imageData };
-				let response;
-				if (isEditing) {
-					response = await api.put(`product/productEdit/${productId}`, data);
-				} else {
-					response = await api.post("product/createProduct", data);
-				}
-				if (response.status === 200) {
-					toast.success(response.data.message);
-					setFormData({
-						productName: "",
-						description: "",
-						category: "",
-						brand: "",
-						gender: "",
-						stock: "",
-						regularPrice: "",
-						salePrice: "",
-						sizes: [{ size: "", stock: 0 }],
-					});
-					setImageData({
-						thumbnail: null,
-						galleryImages: [],
-					});
-					if (!isEditing) {
-						navigate(`/dashboard/products`);
-					} else {
-						navigate(`/dashboard/products`);
-					}
-				}
-				console.log("rsp of Productadd", response);
-			} catch (error) {
-				console.error(error);
-				toast.error(error.response?.data?.message || "Internal server error");
+		if (Object.keys(validateForm).length === 0) setLoading(true);
+		try {
+			const data = { ...formData, ...imageData };
+			let response;
+			if (isEditing) {
+				response = await api.put(`product/productEdit/${productId}`, data);
+			} else {
+				response = await api.post("product/createProduct", data);
 			}
+			if (response.status === 200) {
+				toast.success(response.data.message);
+				setFormData({
+					productName: "",
+					description: "",
+					category: "",
+					brand: "",
+					gender: "",
+					stock: "",
+					regularPrice: "",
+					salePrice: "",
+					sizes: [{ size: "", stock: 0 }],
+				});
+				setImageData({
+					thumbnail: null,
+					galleryImages: [],
+				});
+				if (!isEditing) {
+					navigate(`/dashboard/products`);
+				} else {
+					navigate(`/dashboard/products`);
+				}
+			}
+			console.log("rsp of Productadd", response);
+		} catch (error) {
+			console.error(error);
+			toast.error(error.response?.data?.message || "Internal server error");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const handleSubmit = () => {
@@ -484,6 +487,12 @@ const ProductForm = () => {
 					</button>
 				</div>
 			</div>
+			{/* Loading spinner */}
+			{loading && (
+				<div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+					<div className="w-16 h-16 border-t-4 border-white border-solid rounded-full animate-spin"></div>
+				</div>
+			)}
 		</div>
 	);
 };

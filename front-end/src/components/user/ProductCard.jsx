@@ -11,23 +11,29 @@ const ProductCard = ({ productData }) => {
 
 	return (
 		<div
-			className="bg-white rounded-sm p-4 flex flex-col justify-center items-center cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6"
+			className="bg-white rounded-lg p-4 flex flex-col justify-center items-center cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6 transform hover:scale-105"
 			onClick={handleProductDetails}
 		>
-			<div className="w-full h-52 flex items-center justify-center overflow-hidden mb-4">
+			<div className="w-full h-44 sm:h-52 flex items-center justify-center overflow-hidden mb-4">
 				<img
-					className="w-52 h-52 object-contain"
+					className="w-full h-full object-contain"
 					src={productData.thumbnail}
 					alt={productData.productName}
 				/>
 			</div>
 			<div className="text-center mb-2">
-				<span className="text-lg font-semibold">{productData.productName}</span>
+				<span className="text-md sm:text-lg font-semibold">
+					{productData.productName}
+				</span>
 			</div>
 			<div className="flex items-center gap-2">
-				<span className="text-md font-medium">${productData.salePrice}</span>
+				<span className="text-sm sm:text-md font-medium">
+					${productData.salePrice}
+				</span>
 				<PiLineVerticalThin className="text-gray-400" />
-				<span className="text-yellow-400 text-sm font-medium">4.7</span>
+				<span className="text-yellow-400 text-xs sm:text-sm font-medium">
+					4.7
+				</span>
 				<svg
 					className="w-4 h-4 text-yellow-400"
 					fill="currentColor"

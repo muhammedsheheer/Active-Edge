@@ -4,6 +4,8 @@ import otpGenerator from "otp-generator";
 import Otp from "../model/otpScheema.js";
 import { sendOTPByEmail } from "../utils/emailService.js";
 import { generateToken } from "../utils/generateToken.js";
+import { client } from "../config/googleConfig.js";
+import axios from "axios";
 
 const registerUser = async (req, res) => {
 	try {
@@ -36,8 +38,6 @@ const registerUser = async (req, res) => {
 			lowerCaseAlphabets: false,
 			specialChars: false,
 		});
-
-		console.log(`Generated OTP: ${otp}`);
 
 		const otpData = new Otp({ email, otp });
 		await otpData.save();
@@ -143,6 +143,88 @@ const userLogin = async (req, res) => {
 	}
 };
 
+// const googleLogin = async (req, res) => {
+// 	try {
+// 		const { code } = req.body;
+// 		const { tokens } = await client.getToken(code);
+
+// 		const googleUser = await axios.get(
+// 			"https://www.googleapis.com/oauth2/v3/userinfo",
+// 			{ headers: { Authorization: `Bearer ${tokens.access_token}` } }
+// 		);
+
+// 		const { email, given_name, family_name } = googleUser.data;
+
+// 		let user = await User.findOne({ email });
+// 		if (!user) {
+// 			user = new User({
+// 				name: given_name,
+// 				email,
+// 				password: await bcrypt.hash(tokens.id_token, 10),
+// 				isVerified: true,
+// 			});
+// 			await user.save();
+// 		}
+// 		generateToken(res, user);
+
+// 		const userDataWithoutPassword = { ...user.toObject() };
+// 		delete userDataWithoutPassword.password;
+
+// 		res.status(200).json({
+// 			message: "Google login successful",
+// 			userData: userDataWithoutPassword,
+// 		});
+// 	} catch (error) {
+// 		console.error(error);
+// 		return res.status(500).json({ message: "Login failed with google" });
+// 	}
+// };
+
+const googleLogin = async (req, res) => {
+	try {
+		const { code } = req.body;
+		const { tokens } = await client.getToken(code);
+
+		const googleUser = await axios.get(
+			"https://www.googleapis.com/oauth2/v3/userinfo",
+			{
+				headers: { Authorization: `Bearer ${tokens.access_token}` },
+			}
+		);
+
+		const { email, given_name } = googleUser.data;
+
+		let user = await User.findOne({ email });
+		if (!user) {
+			user = new User({
+				name: given_name,
+				email,
+				password: await bcrypt.hash(tokens.id_token, 10),
+				isVerified: true,
+			});
+			await user.save();
+		}
+		generateToken(res, user); // Ensure this sets the token in cookies or headers
+
+		const userDataWithoutPassword = {
+			user: user._id.toString(), // Ensure user ID is converted to string
+			name: user.name,
+			email: user.email,
+			role: user.role,
+			isAuthenticated: true,
+		};
+		console.log("user", userDataWithoutPassword);
+
+		res.status(200).json({
+			message: "Google login successful",
+			userData: userDataWithoutPassword,
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ message: "Login failed with Google" });
+	}
+};
+
 const logout = async (req, res) => {
 	try {
 		res.cookie("jwtToken", "", {
@@ -155,4 +237,4 @@ const logout = async (req, res) => {
 	}
 };
 
-export { registerUser, verifiOtp, resendOtp, userLogin, logout };
+export { registerUser, verifiOtp, resendOtp, userLogin, logout, googleLogin };

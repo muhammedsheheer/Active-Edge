@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/user/Header";
-import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Footer from "../../components/user/Footer";
 import { setUser } from "../../../redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { validateLoginForm } from "../../utils/FormValidation";
 import { toast } from "react-toastify";
 import api from "../../config/axiosConfig";
+import { useGoogleLogin } from "@react-oauth/google";
+import { FcGoogle } from "react-icons/fc";
 
 const UserLogin = () => {
 	const dispatch = useDispatch();
@@ -33,13 +35,13 @@ const UserLogin = () => {
 		if (Object.keys(formValidate).length === 0) {
 			try {
 				const res = await api.post("users/login", formData);
+				console.log("the response", res);
 				const { user, isAuthenticated, role } = res?.data;
 				dispatch(setUser({ user, isAuthenticated, role }));
 				toast.success(res?.data?.message);
-				console.log(res?.data?.role);
 				res?.data?.role === "admin" ? navigate("/dashboard") : navigate("/");
 			} catch (error) {
-				toast.error(error.message);
+				toast.error("Invalid password or email");
 			}
 		}
 	};
@@ -48,15 +50,43 @@ const UserLogin = () => {
 		setShowPassword((prev) => !prev);
 	};
 
+	const login = useGoogleLogin({
+		onSuccess: async (codeResponse) => {
+			try {
+				const res = await api.post(
+					"/users/google-login",
+					{
+						code: codeResponse.code,
+					},
+					{ withCredentials: true }
+				);
+				console.log("the user loger", res);
+
+				dispatch(setUser(res.data.userData));
+				toast.success(res.data.message);
+				navigate(res.data.userData.role ? "/dashboard" : "/");
+			} catch (err) {
+				console.error(err);
+				toast.error(err.response?.data?.message || "Google login failed");
+			}
+		},
+		flow: "auth-code",
+	});
+
 	return (
 		<>
 			<Header />
+
 			<div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
 				<div className="w-full max-w-sm bg-white p-8 rounded-lg shadow-md">
 					<h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-					<button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4 flex items-center justify-center space-x-2">
-						<FaGoogle />
-						<span>Login with Google</span>
+					<button
+						onClick={() => login()}
+						type="button"
+						className="mb-4 w-full flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+					>
+						<FcGoogle className="w-5 h-5 mr-2" />
+						Sign up with Google
 					</button>
 					<form onSubmit={handleSubmit} className="space-y-4">
 						<div>

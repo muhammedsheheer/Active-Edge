@@ -25,6 +25,45 @@ const userSchema = mongoose.Schema(
 			default: false,
 		},
 		dpImage: { type: String, required: false },
+		addresses: [
+			{
+				name: {
+					type: String,
+				},
+				phone: {
+					type: Number,
+					required: true,
+				},
+				address: {
+					type: String,
+					required: true,
+				},
+				locality: {
+					type: String,
+					required: true,
+				},
+				city: {
+					type: String,
+					required: true,
+				},
+				state: {
+					type: String,
+					required: true,
+				},
+				pinCode: {
+					type: Number,
+				},
+				typeofPlace: {
+					type: String,
+					enum: ["home", "work"],
+					default: "home",
+				},
+				isDefaultAddress: {
+					type: Boolean,
+					default: false,
+				},
+			},
+		],
 	},
 	{
 		timestamps: true,

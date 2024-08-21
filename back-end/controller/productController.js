@@ -49,7 +49,6 @@ const createProduct = async (req, res) => {
 				600
 			);
 		} catch (imageError) {
-			console.error("Error uploading images:", imageError);
 			return res
 				.status(500)
 				.json({ message: "Image upload failed", error: imageError });
@@ -90,7 +89,6 @@ const getProducts = async (req, res) => {
 			.populate("brand")
 			.sort({ createdAt: -1 })
 			.limit(12);
-		console.log("The getProducts ", products);
 		return res
 			.status(200)
 			.json({ message: "prodduct fetched successfully", products: products });

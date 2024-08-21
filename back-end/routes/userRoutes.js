@@ -5,13 +5,18 @@ import {
 	resendOtp,
 	userLogin,
 	logout,
+	googleLogin,
 } from "../controller/authController.js";
 import { isAuth, isAuthAdmin } from "../midlware/isAuth.js";
 import {
+	addAddress,
 	blockUser,
 	deleteUser,
+	editAddress,
+	getAddress,
 	getAllUser,
 	getUserDetails,
+	removeAddress,
 	updateUserDetails,
 } from "../controller/userController.js";
 
@@ -21,6 +26,7 @@ router.post("/register", registerUser);
 router.post("/verify-otp", verifiOtp);
 router.post("/resend-otp", resendOtp);
 router.post("/login", userLogin);
+router.post("/google-login", googleLogin);
 router.post("/logout", logout);
 
 //user routes
@@ -30,5 +36,11 @@ router.get("/getUserDetails", isAuth, getUserDetails);
 router.put("/blockUser/:id", isAuth, isAuthAdmin, blockUser);
 router.put("/updateUserDetails", isAuth, updateUserDetails);
 router.delete("/deleteUser/:id", isAuth, isAuthAdmin, deleteUser);
+
+//user address routes
+router.post("/add-address", isAuth, addAddress);
+router.get("/get-address", isAuth, getAddress);
+router.delete("/remove-address/:addressId", isAuth, removeAddress);
+router.put("/edit-address/:addressId", isAuth, editAddress);
 
 export default router;

@@ -4,6 +4,8 @@ import categoryRoutes from "./categoryRoutes.js";
 import brandRoutes from "./brandRoutes.js";
 import productRoutes from "./productRoutes.js";
 import wishListRoutes from "./wishListRoutes.js";
+import cartRoutes from "./cartRoutes.js";
+import orderRoutes from "./orderRoutes.js";
 
 const app = express.Router();
 
@@ -12,5 +14,7 @@ app.use("/category", categoryRoutes);
 app.use("/brand", brandRoutes);
 app.use("/product", productRoutes);
 app.use("/wishlist", wishListRoutes);
+app.use("/cart", cartRoutes);
+app.use("/order", orderRoutes);
 
 export default app;

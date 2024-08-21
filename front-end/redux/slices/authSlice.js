@@ -15,6 +15,8 @@ const authSlice = createSlice({
 	reducers: {
 		setUser: (state, action) => {
 			state.user = action.payload.user;
+			console.log("the pay load user", action.payload.user);
+
 			state.isAuthenticated = action.payload.isAuthenticated;
 			state.status = "success";
 			state.role = action.payload.role;

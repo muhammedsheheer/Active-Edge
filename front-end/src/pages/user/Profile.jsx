@@ -9,8 +9,8 @@ const Profile = () => {
 	const dispatch = useDispatch();
 	const [userDetails, setUserDetails] = useState({
 		name: "",
-		email: "",
 		phone: "",
+		email: "",
 	});
 	const [imageData, setImageData] = useState({ dpImage: null });
 
@@ -47,18 +47,18 @@ const Profile = () => {
 	};
 
 	return (
-		<div className="flex flex-col lg:flex-row items-center lg:items-start p-4 lg:p-8">
-			<div className="flex flex-col items-center lg:items-start">
+		<div className="flex flex-col lg:flex-row items-center lg:items-start p-4 lg:p-8 bg-gray-50 min-h-screen">
+			<div className="flex flex-col items-center lg:items-start lg:w-1/3">
 				<img
 					src={imageData.dpImage}
 					alt={userDetails.name}
-					className="rounded-full w-24 h-24 mb-4"
+					className="rounded-full w-32 h-32 mb-4 shadow-lg object-cover"
 				/>
-				<h2 className="text-xl font-semibold">{userDetails.name}</h2>
-				<p className="text-gray-500">{userDetails.email}</p>
-				<nav className="mt-4 space-y-2">
+				<h2 className="text-2xl font-bold text-black">{userDetails.name}</h2>
+				<p className="text-gray-600">{userDetails.phone}</p>
+				<nav className="mt-6 space-y-3 w-full">
 					<Link
-						to="/edit-profile"
+						to="/editprofile"
 						className="block text-black hover:text-gray-700"
 					>
 						Edit Profile
@@ -86,37 +86,47 @@ const Profile = () => {
 					</Link>
 					<button
 						onClick={handleLogOut}
-						className="block text-white p-1.5 rounded-sm bg-black hover:text-gray-700"
+						className="block text-white p-2 rounded-sm bg-black hover:text-gray-700 w-full text-center"
 					>
 						Logout
 					</button>
 				</nav>
 			</div>
 			<div className="flex-grow mt-8 lg:mt-0 lg:ml-16">
-				<div className="bg-white shadow-md rounded p-4 lg:p-8">
+				<div className="bg-white shadow-lg rounded-lg p-6 lg:p-8">
+					<h3 className="text-xl font-semibold mb-4">Profile Information</h3>
 					<div className="space-y-4">
-						<div className="flex justify-between">
+						<div className="flex justify-between items-center border-b pb-2">
 							<span className="text-gray-700">Name</span>
-							<span className="text-black">{userDetails.name}</span>
+							<span className="text-black font-medium">{userDetails.name}</span>
 						</div>
-						<div className="flex justify-between">
+						<div className="flex justify-between items-center border-b pb-2">
 							<span className="text-gray-700">Email</span>
-							<span className="text-black">{userDetails.email}</span>
+							<span className="text-black font-medium">
+								{userDetails.email}
+							</span>
 						</div>
-						<div className="flex justify-between">
+						<div className="flex justify-between items-center border-b pb-2">
 							<span className="text-gray-700">Mobile Number</span>
-							<span className="text-black">{userDetails.phone}</span>
+							<span className="text-black font-medium">
+								{userDetails.phone}
+							</span>
 						</div>
 					</div>
-					<button className="mt-4 w-full bg-black text-white py-2 rounded">
-						Edit
-					</button>
-					<button className="mt-4 w-full bg-black text-white py-2 rounded">
-						Shipping Address
-					</button>
-					<button className="mt-4 w-full bg-black text-white py-2 rounded">
-						Order History
-					</button>
+					<div className="mt-6">
+						<Link
+							to="/shipping-address"
+							className="block text-center bg-black text-white py-2 rounded mb-3 hover:bg-gray-800"
+						>
+							Shipping Address
+						</Link>
+						<Link
+							to="/orderHistory"
+							className="block text-center bg-black text-white py-2 rounded hover:bg-gray-800"
+						>
+							Order History
+						</Link>
+					</div>
 				</div>
 			</div>
 		</div>
