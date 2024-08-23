@@ -5,7 +5,6 @@ import { RiCloseLargeLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import logo from "../../assets/active-edge-high-resolution-logo-black-transparent.png";
 import { useDispatch, useSelector } from "react-redux";
-// import { getCarItems } from "../../../redux/slices/cartSlice";
 
 const NavBar = () => {
 	const { user } = useSelector((state) => state.auth);
@@ -16,10 +15,6 @@ const NavBar = () => {
 	const [searchVisible, setSearchVisible] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const cartItemCount = items?.length;
-
-	// useEffect(() => {
-	// 	dispatch(getCarItems());
-	// }, [dispatch]);
 
 	const inputRef = useRef(null);
 

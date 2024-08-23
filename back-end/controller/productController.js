@@ -11,7 +11,6 @@ const createProduct = async (req, res) => {
 			category,
 			brand,
 			gender,
-			stock,
 			regularPrice,
 			salePrice,
 			sizes,
@@ -24,7 +23,6 @@ const createProduct = async (req, res) => {
 			!category ||
 			!brand ||
 			!gender ||
-			!stock ||
 			!regularPrice ||
 			!salePrice ||
 			!sizes
@@ -60,7 +58,6 @@ const createProduct = async (req, res) => {
 			category,
 			brand,
 			gender,
-			stock,
 			regularPrice,
 			salePrice,
 			sizes,
@@ -146,7 +143,6 @@ const updateProduct = async (req, res) => {
 			category,
 			brand,
 			gender,
-			stock,
 			regularPrice,
 			salePrice,
 			sizes,
@@ -161,9 +157,8 @@ const updateProduct = async (req, res) => {
 			(product.category = category || product.category),
 			(product.brand = brand || product.brand),
 			(product.gender = gender || product.gender);
-		(product.stock = stock !== undefined ? stock : product.stock),
-			(product.regularPrice =
-				regularPrice !== undefined ? regularPrice : product.regularPrice),
+		(product.regularPrice =
+			regularPrice !== undefined ? regularPrice : product.regularPrice),
 			(product.salePrice =
 				salePrice !== undefined ? salePrice : product.salePrice),
 			(product.sizes = sizes || product.sizes),

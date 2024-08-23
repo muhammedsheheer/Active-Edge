@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { addAddress, editAddress } from "../../../redux/slices/addressSlice"; // Update the path as needed
+import {
+	addAddress,
+	editAddress,
+	getAddress,
+} from "../../../redux/slices/addressSlice"; // Update the path as needed
 
 const AddressModal = ({ onClose, addressed }) => {
 	const dispatch = useDispatch();
@@ -71,9 +75,12 @@ const AddressModal = ({ onClose, addressed }) => {
 						addressData: address,
 					})
 				);
+
+				// dispatch(getAddress());
 			} else {
 				dispatch(addAddress(address));
 			}
+
 			onClose();
 		}
 	};

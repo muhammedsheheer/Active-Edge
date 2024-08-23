@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
-
 import { FaImage } from "react-icons/fa";
 import { FaCropSimple } from "react-icons/fa6";
 import ImageCropperModal from "./ImageCropperModal ";
+
+const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 const ImageUploadSection = ({ onImageData, editingImage }) => {
 	const [thumbnail, setThumbnail] = useState(editingImage?.thumbnail || null);
@@ -18,6 +19,9 @@ const ImageUploadSection = ({ onImageData, editingImage }) => {
 	const thumbnailInputRef = useRef(null);
 	const galleryInputRef = useRef(null);
 
+	const prevThumbnailRef = useRef(thumbnail);
+	const prevGalleryImagesRef = useRef(galleryImages);
+
 	const validImageType = ["image/png", "image/jpeg"];
 
 	useEffect(() => {
@@ -26,10 +30,6 @@ const ImageUploadSection = ({ onImageData, editingImage }) => {
 			setGalleryImages(editingImage?.galleryImages);
 		}
 	}, [editingImage]);
-
-	useEffect(() => {
-		onImageData({ thumbnail, galleryImages });
-	}, [thumbnail, galleryImages]);
 
 	const handleThumbnailUpload = (file) => {
 		if (file && validImageType.includes(file.type)) {
@@ -68,6 +68,17 @@ const ImageUploadSection = ({ onImageData, editingImage }) => {
 			setGalleryError("");
 		}
 	};
+
+	useEffect(() => {
+		if (
+			!deepEqual(prevThumbnailRef.current, thumbnail) ||
+			!deepEqual(prevGalleryImagesRef.current, galleryImages)
+		) {
+			onImageData({ thumbnail, galleryImages });
+			prevThumbnailRef.current = thumbnail;
+			prevGalleryImagesRef.current = galleryImages;
+		}
+	}, [thumbnail, galleryImages]);
 
 	const removeThumbnail = () => {
 		setThumbnail(null);
@@ -230,4 +241,4 @@ const ImageUploadSection = ({ onImageData, editingImage }) => {
 	);
 };
 
-export default ImageUploadSection;
+export default React.memo(ImageUploadSection);

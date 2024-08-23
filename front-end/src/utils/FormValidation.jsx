@@ -55,85 +55,45 @@ export const validateRegisterForm = (input) => {
 	return errors;
 };
 
-// utils/validateForms.js
-// export const validateProductForm = (inputField) => {
-// 	const newError = {};
-// 	if (!inputField.productName) newError.productName = "is required*";
-// 	if (!inputField.description) newError.description = "is required*";
-// 	if (!inputField.category) newError.category = "is required*";
-// 	if (!inputField.brand) newError.brand = "is required*";
-// 	if (!inputField.gender) newError.gender = "is required*";
-// 	if (!inputField.stock) newError.stock = "is required*";
-// 	if (!inputField.regularPrice) newError.regularPrice = "is required";
-// 	if (!inputField.salePrice) newError.salePrice = "is required";
-
-// 	return newError;
-// };
-
-// utils/validateForms.js
-// utils/validateForms.js
+// validate product form
 export const validateProductForm = (inputField) => {
 	const newError = {};
 
-	// Validate string inputs
-	const validateStringField = (field, fieldName) => {
-		const trimmedField = field?.trim();
-		if (!trimmedField) {
-			newError[fieldName] = `${fieldName.replace(
-				/([A-Z])/g,
-				" $1"
-			)} is required*`;
-		}
-	};
+	// Basic field validations
+	if (!inputField.productName)
+		newError.productName = "Product name is required*";
+	if (!inputField.description)
+		newError.description = "Description is required*";
+	if (!inputField.category) newError.category = "Category is required*";
+	if (!inputField.brand) newError.brand = "Brand is required*";
+	if (!inputField.gender) newError.gender = "Gender is required*";
 
-	validateStringField(inputField.productName, "productName");
-	validateStringField(inputField.description, "description");
-	validateStringField(inputField.category, "category");
-	validateStringField(inputField.brand, "brand");
-	validateStringField(inputField.gender, "gender");
-
-	// Validate number inputs
-	const validateNumberField = (field, fieldName) => {
-		if (field == null) {
-			newError[fieldName] = `${fieldName.replace(
-				/([A-Z])/g,
-				" $1"
-			)} is required*`;
-		} else if (isNaN(field) || Number(field) < 0) {
-			newError[fieldName] = `${fieldName.replace(
-				/([A-Z])/g,
-				" $1"
-			)} must be a non-negative number*`;
-		}
-	};
-
-	validateNumberField(inputField.stock, "stock");
-	validateNumberField(inputField.regularPrice, "regularPrice");
-
-	// Validate sale price if it is provided
-	if (inputField.salePrice != null) {
-		validateNumberField(inputField.salePrice, "salePrice");
+	// Price validations
+	if (!inputField.regularPrice) {
+		newError.regularPrice = "Regular price is required*";
+	} else if (inputField.regularPrice < 0) {
+		newError.regularPrice = "Regular price cannot be negative";
 	}
 
-	// Validate sizes array
-	if (Array.isArray(inputField.sizes) && inputField.sizes.length > 0) {
+	if (!inputField.salePrice) {
+		newError.salePrice = "Sale price is required*";
+	} else if (inputField.salePrice < 0) {
+		newError.salePrice = "Sale price cannot be negative";
+	}
+
+	// Sizes array validation
+	if (!inputField.sizes || inputField.sizes.length === 0) {
+		newError.sizes = "At least one size is required*";
+	} else {
+		// Specific size validations
 		inputField.sizes.forEach((sizeObj, index) => {
-			const trimmedSize = sizeObj.size?.trim();
-			if (!trimmedSize) {
-				newError[`sizes[${index}].size`] = `Size is required*`;
+			if (sizeObj.size === undefined || sizeObj.size < 0) {
+				newError[`sizes[${index}].size`] = "Size cannot be negative";
 			}
-			if (
-				sizeObj.stock == null ||
-				isNaN(sizeObj.stock) ||
-				Number(sizeObj.stock) < 0
-			) {
-				newError[
-					`sizes[${index}].stock`
-				] = `Size stock must be a non-negative number*`;
+			if (sizeObj.stock === undefined || sizeObj.stock < 0) {
+				newError[`sizes[${index}].stock`] = "Stock cannot be negative";
 			}
 		});
-	} else {
-		newError.sizes = "At least one size is required*";
 	}
 
 	return newError;

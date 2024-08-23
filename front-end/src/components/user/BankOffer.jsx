@@ -23,8 +23,8 @@ const BankOffer = () => {
 				<h3 className="ml-2 text-gray-800 font-medium text-sm">Bank Offer</h3>
 			</div>
 			<p className="text-gray-700 text-xs">
-				Flat $0.60 Cashback on Mobikwik wallet transaction on a minimum spend of
-				$18.00. TCA
+				Flat ₹0.60 Cashback on Mobikwik wallet transaction on a minimum spend of
+				₹18.00. TCA
 			</p>
 			{showMore && (
 				<p className="text-gray-700 text-xs mt-1">

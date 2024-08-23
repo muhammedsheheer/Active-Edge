@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import WomenProductGrid from "../../components/user/WomenComponent";
+import ShopProductGrid from "../../components/user/ShopComponet";
 import api from "../../config/axiosConfig";
 
-const Women = () => {
+const Shop = () => {
 	const [products, setProducts] = useState([]);
 	const fetchProducts = async () => {
 		try {
 			const response = await api.get("/product/getProducts");
 
 			const data = response?.data?.products;
-			console.log("the data", data);
 
-			const Womensdata = data.filter((x) => x.gender === "Women");
-			setProducts(Womensdata);
+			setProducts(data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -24,9 +22,9 @@ const Women = () => {
 
 	return (
 		<div>
-			<WomenProductGrid data={products} />
+			<ShopProductGrid data={products} />
 		</div>
 	);
 };
 
-export default Women;
+export default Shop;

@@ -30,7 +30,6 @@ const ProductForm = () => {
 		category: "",
 		brand: "",
 		gender: "",
-		stock: "",
 		regularPrice: "",
 		salePrice: "",
 		sizes: [{ size: "", stock: 0 }],
@@ -39,7 +38,10 @@ const ProductForm = () => {
 		thumbnail: null,
 		galleryImages: [],
 	});
-
+	console.log("edit page upload renderd");
+	useEffect(() => {
+		console.log("edit page upload renderd image dddddddddddddddddd");
+	}, [imageData]);
 	const fetchBrands = async () => {
 		const response = await api.get("/brand/getbrands");
 		setGetBrands(response?.data?.brandData);
@@ -71,7 +73,6 @@ const ProductForm = () => {
 					gender: product?.gender,
 					regularPrice: product?.regularPrice,
 					salePrice: product?.salePrice,
-					stock: product?.stock,
 					sizes: product.sizes,
 				});
 				setImageData({
@@ -95,10 +96,23 @@ const ProductForm = () => {
 	};
 
 	// size fields adding
+	// const handleSizeChange = (index, field, value) => {
+	// 	const newSizes = [...formData.sizes];
+	// 	newSizes[index][field] = value;
+	// 	setFormData({ ...formData, sizes: newSizes });
+	// };
+
 	const handleSizeChange = (index, field, value) => {
-		const newSizes = [...formData.sizes];
-		newSizes[index][field] = value;
-		setFormData({ ...formData, sizes: newSizes });
+		if (field === "size" && value < 0) {
+			setErrors({ ...errors, sizes: "Size cannot be negative." });
+		} else if (field === "stock" && value < 0) {
+			setErrors({ ...errors, stock: "Stock cannot be negative." });
+		} else {
+			const newSizes = [...formData.sizes];
+			newSizes[index][field] = value;
+			setFormData({ ...formData, sizes: newSizes });
+			setErrors({ ...errors, sizes: null, stock: null });
+		}
 	};
 
 	const addSize = () => {
@@ -121,7 +135,7 @@ const ProductForm = () => {
 	};
 
 	const handleImageData = (data) => {
-		setImageData(data);
+		// setImageData(data);
 	};
 
 	const { thumbnail, galleryImages } = imageData;
@@ -129,6 +143,8 @@ const ProductForm = () => {
 	const submitProductForm = async () => {
 		const validateForm = validateProductForm(formData);
 		setErrors(validateForm);
+		console.log(validateForm);
+
 		if (Object.keys(validateForm).length === 0) setLoading(true);
 		try {
 			const data = { ...formData, ...imageData };
@@ -146,7 +162,6 @@ const ProductForm = () => {
 					category: "",
 					brand: "",
 					gender: "",
-					stock: "",
 					regularPrice: "",
 					salePrice: "",
 					sizes: [{ size: "", stock: 0 }],
@@ -164,7 +179,6 @@ const ProductForm = () => {
 			console.log("rsp of Productadd", response);
 		} catch (error) {
 			console.error(error);
-			toast.error(error.response?.data?.message || "Internal server error");
 		} finally {
 			setLoading(false);
 		}
@@ -337,27 +351,6 @@ const ProductForm = () => {
 							</div>
 
 							{/* product stock */}
-
-							<div className="">
-								<label
-									className={`text-sm font-medium  flex ${
-										errors.stock ? "text-red-500" : "text-gray-700"
-									}`}
-								>
-									Total Stock
-									{errors.stock && (
-										<p className="text-red-500 text-sm px-2">{errors.stock}</p>
-									)}
-								</label>
-								<input
-									type="text"
-									name="stock"
-									value={formData.stock}
-									onChange={handleInputChange}
-									className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-								/>
-							</div>
-
 							{/* product price */}
 							<div className="flex gap-4">
 								<div className="w-1/2">
@@ -410,36 +403,40 @@ const ProductForm = () => {
 							<div>
 								{/* Sizes and Stock */}
 
-								<label
-									className={`text-sm font-medium flex ${
-										errors.stock ? "text-red-500" : "text-gray-700"
-									}`}
-								>
-									Sizes and Stock{" "}
-									{errors.stock && (
-										<p className="text-red-500 text-sm px-2">{errors.stock}</p>
-									)}
-								</label>
 								{formData.sizes?.map((sizeObj, index) => (
 									<div key={index} className="flex items-center gap-2 mt-2">
-										<input
-											type="number"
-											placeholder="Size"
-											value={sizeObj.size}
-											onChange={(e) =>
-												handleSizeChange(index, "size", e.target.value)
-											}
-											className="flex-grow border border-gray-300 rounded-md shadow-sm p-2"
-										/>
-										<input
-											type="number"
-											placeholder="Stock"
-											value={sizeObj.stock}
-											onChange={(e) =>
-												handleSizeChange(index, "stock", e.target.value)
-											}
-											className="flex-grow border border-gray-300 rounded-md shadow-sm p-2"
-										/>
+										<div className="relative flex-grow">
+											<input
+												type="number"
+												placeholder="Size"
+												value={sizeObj.size}
+												onChange={(e) =>
+													handleSizeChange(index, "size", e.target.value)
+												}
+												className="flex-grow border border-gray-300 rounded-md shadow-sm p-2"
+											/>
+											{errors[`sizes[${index}].size`] && (
+												<p className="absolute text-red-600 text-xs mt-1">
+													{errors[`sizes[${index}].size`]}
+												</p>
+											)}
+										</div>
+										<div className="relative flex-grow">
+											<input
+												type="number"
+												placeholder="Stock"
+												value={sizeObj.stock}
+												onChange={(e) =>
+													handleSizeChange(index, "stock", e.target.value)
+												}
+												className="flex-grow border border-gray-300 rounded-md shadow-sm p-2"
+											/>
+											{errors[`sizes[${index}].stock`] && (
+												<p className="absolute text-red-600 text-xs mt-1">
+													{errors[`sizes[${index}].stock`]}
+												</p>
+											)}
+										</div>
 										<button
 											type="button"
 											onClick={() => removeSize(index)}
@@ -462,7 +459,7 @@ const ProductForm = () => {
 				</div>
 				<div className="w-full md:w-1/2  bg-white py-10 px-5 rounded-md ">
 					<ImageUploadSection
-						onImageData={handleImageData}
+						onImageData={setImageData}
 						editingImage={imageData}
 					/>
 				</div>

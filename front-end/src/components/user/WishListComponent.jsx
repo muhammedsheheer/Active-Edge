@@ -59,7 +59,7 @@ const WishListComponent = ({ userId }) => {
 									</div>
 									<div className="flex items-center gap-2 mb-4">
 										<span className="text-sm font-medium">
-											${product.salePrice}
+											₹{product.salePrice}
 										</span>
 										<PiLineVerticalThin className="text-gray-400" />
 										<span className="text-yellow-400 text-xs font-medium">

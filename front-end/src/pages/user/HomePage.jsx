@@ -22,7 +22,11 @@ const HomePage = () => {
 	return (
 		<div className="container mx-auto px-2 sm:px-4">
 			<div className="mb-14 md:mb-20">
-				<SportsFitBanner />
+				<SportsFitBanner
+					image={
+						"https://images.hdqwalls.com/download/neymar-jr-brazil-portraits-f1-3840x2400.jpg"
+					}
+				/>
 			</div>
 			<h1 className="text-center mb-16  font-semibold text-3xl">
 				Our Products

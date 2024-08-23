@@ -13,7 +13,6 @@ const EditProfile = () => {
 	const [loading, setLoading] = useState(true); // State for loading data
 	const [isSaving, setIsSaving] = useState(false); // State for saving spinner
 
-	// Fetch user details on component mount
 	const fetchUserDetails = async () => {
 		try {
 			const response = await api.get("/users/getUserDetails");
@@ -24,7 +23,7 @@ const EditProfile = () => {
 		} catch (error) {
 			toast.error("Failed to fetch user details");
 		} finally {
-			setLoading(false); // Stop loading spinner once data is fetched
+			setLoading(false);
 		}
 	};
 
@@ -101,7 +100,7 @@ const EditProfile = () => {
 	return (
 		<div className="max-w-md mx-auto p-8 bg-white rounded-xl shadow-xl">
 			<h2 className="text-3xl font-semibold text-center mb-8 text-gray-900">
-				Edit Profile
+				Profile
 			</h2>
 
 			<div className="flex flex-col items-center mb-8">

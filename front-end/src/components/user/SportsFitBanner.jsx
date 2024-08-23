@@ -1,6 +1,9 @@
 import React from "react";
 
-const SportsFitBanner = () => {
+const SportsFitBanner = ({ image }) => {
+	const handle = () => {
+		window.scroll({ top: 450 });
+	};
 	return (
 		<div className="flex flex-col md:flex-row items-center justify-between bg-white p-4 sm:p-6 md:p-12 shadow-lg rounded-md">
 			{/* Text Section */}
@@ -12,7 +15,10 @@ const SportsFitBanner = () => {
 					Explore our curated collection of stylish clothing and accessories
 					tailored to your unique taste.
 				</p>
-				<button className="bg-black text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-800 transition duration-300">
+				<button
+					onClick={handle}
+					className="bg-black text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-800 transition duration-300"
+				>
 					EXPLORE NOW
 				</button>
 			</div>
@@ -21,9 +27,9 @@ const SportsFitBanner = () => {
 			<div className="flex-1 flex justify-center">
 				<div className="w-full max-w-xs sm:max-w-sm md:max-w-full">
 					<img
-						src="https://images.hdqwalls.com/download/neymar-jr-brazil-portraits-f1-3840x2400.jpg"
+						src={image}
 						alt="Sports Fit"
-						className="w-full h-auto object-cover rounded-md shadow-lg border border-gray-200"
+						className="w-full h-72 object-cover rounded-md shadow-lg border border-gray-200"
 					/>
 				</div>
 			</div>

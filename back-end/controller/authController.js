@@ -143,43 +143,6 @@ const userLogin = async (req, res) => {
 	}
 };
 
-// const googleLogin = async (req, res) => {
-// 	try {
-// 		const { code } = req.body;
-// 		const { tokens } = await client.getToken(code);
-
-// 		const googleUser = await axios.get(
-// 			"https://www.googleapis.com/oauth2/v3/userinfo",
-// 			{ headers: { Authorization: `Bearer ${tokens.access_token}` } }
-// 		);
-
-// 		const { email, given_name, family_name } = googleUser.data;
-
-// 		let user = await User.findOne({ email });
-// 		if (!user) {
-// 			user = new User({
-// 				name: given_name,
-// 				email,
-// 				password: await bcrypt.hash(tokens.id_token, 10),
-// 				isVerified: true,
-// 			});
-// 			await user.save();
-// 		}
-// 		generateToken(res, user);
-
-// 		const userDataWithoutPassword = { ...user.toObject() };
-// 		delete userDataWithoutPassword.password;
-
-// 		res.status(200).json({
-// 			message: "Google login successful",
-// 			userData: userDataWithoutPassword,
-// 		});
-// 	} catch (error) {
-// 		console.error(error);
-// 		return res.status(500).json({ message: "Login failed with google" });
-// 	}
-// };
-
 const googleLogin = async (req, res) => {
 	try {
 		const { code } = req.body;
@@ -204,10 +167,10 @@ const googleLogin = async (req, res) => {
 			});
 			await user.save();
 		}
-		generateToken(res, user); // Ensure this sets the token in cookies or headers
+		generateToken(res, user);
 
 		const userDataWithoutPassword = {
-			user: user._id.toString(), // Ensure user ID is converted to string
+			user: user._id.toString(),
 			name: user.name,
 			email: user.email,
 			role: user.role,

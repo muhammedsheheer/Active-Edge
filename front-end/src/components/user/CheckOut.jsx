@@ -3,20 +3,33 @@ import AddressModal from "./AddressModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAddress, removeAddress } from "../../../redux/slices/addressSlice";
+import { toast } from "react-toastify";
 
 const CheckOut = () => {
-	const addresses = useSelector((state) => state.address.addresses);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const addresses = useSelector((state) => state.address.addresses);
+
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedAddress, setSelectedAddress] = useState(null);
 	const [selectedAddressId, setSelectedAddressId] = useState(null);
-	const location = useLocation();
-	const { totalAmount, discount } = location.state || {};
 
 	useEffect(() => {
 		dispatch(getAddress());
 	}, [dispatch]);
+
+	useEffect(() => {
+		if (addresses.length > 0) {
+			const defaultAddr = addresses.find(
+				(addr) => addr.isDefaultAddress === true
+			);
+			setSelectedAddress(defaultAddr || null);
+			setSelectedAddressId(defaultAddr ? defaultAddr._id : null);
+		}
+	}, [addresses]);
+
+	const location = useLocation();
+	const { totalAmount = 0, discount = 0 } = location.state || {};
 
 	const handleEdit = (address) => {
 		setSelectedAddress(address);
@@ -40,7 +53,7 @@ const CheckOut = () => {
 
 	const handleProceedToCheckout = () => {
 		if (!selectedAddressId) {
-			alert("Please select a delivery address.");
+			toast.error("Please select a delivery address.");
 			return;
 		}
 		navigate("/payment", {
@@ -63,7 +76,7 @@ const CheckOut = () => {
 				{addresses.map((address) => (
 					<div
 						key={address._id}
-						className={`bg-white rounded-lg shadow p-3 mb-4 border border-gray-300 w-full md:w-full text-sm ${
+						className={`bg-white rounded-lg shadow p-3 mb-4 border border-gray-300 w-full text-sm ${
 							selectedAddressId === address._id ? "bg-gray-100" : ""
 						}`}
 					>
@@ -112,7 +125,7 @@ const CheckOut = () => {
 					</div>
 				))}
 
-				<div className="bg-white border border-dashed border-pink-500 text-pink-500 p-3 rounded cursor-pointer w-full md:w-2/3 text-sm">
+				<div className="bg-white border border-dashed border-pink-500 text-pink-500 p-3 rounded cursor-pointer w-full text-sm">
 					<button onClick={handleNew}>+ Add New Address</button>
 					{isModalOpen && (
 						<AddressModal
@@ -132,7 +145,7 @@ const CheckOut = () => {
 				</div>
 				<div className="flex justify-between mb-4">
 					<span className="font-medium text-gray-700">Discount:</span>
-					<span className="font-semibold">- ₹{discount.toFixed(2)}</span>
+					<span className="font-semibold">-₹{discount.toFixed(2)}</span>
 				</div>
 				<div className="flex justify-between mb-4">
 					<span className="font-medium text-gray-700">Shipping:</span>

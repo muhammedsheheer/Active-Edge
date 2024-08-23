@@ -28,7 +28,7 @@ const ProductCard = ({ productData }) => {
 			</div>
 			<div className="flex items-center gap-2">
 				<span className="text-sm sm:text-md font-medium">
-					${productData.salePrice}
+					₹{productData.salePrice}
 				</span>
 				<PiLineVerticalThin className="text-gray-400" />
 				<span className="text-yellow-400 text-xs sm:text-sm font-medium">

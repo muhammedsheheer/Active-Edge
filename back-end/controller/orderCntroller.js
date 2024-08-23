@@ -203,6 +203,27 @@ const cancelOrder = async (req, res) => {
 				}
 			}
 
+			const statuses = order.items
+				.filter((item) => item.status !== "Cancelled")
+				.map((item) => item.status);
+
+			const statusCount = statuses.reduce((count, status) => {
+				count[status] = (count[status] || 0) + 1;
+				return count;
+			}, {});
+
+			const highestStatus = Object.entries(statusCount).reduce(
+				(max, [status, count]) => (count > max.count ? { status, count } : max),
+				{ status: null, count: 0 }
+			);
+
+			if (highestStatus.status) {
+				order.orderStatus = highestStatus.status;
+			} else if (statuses.length === 0) {
+				order.orderStatus = "Cancelled";
+			}
+
+			await order.save();
 			return res
 				.status(200)
 				.json({ message: "Order item cancelled successfully", order });

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import User from "../model/userScheema.js";
 
-const isAuth = (req, res, next) => {
+const isAuth = async (req, res, next) => {
 	const token = req.cookies.jwtToken;
 	if (!token) {
 		return res
@@ -10,6 +11,11 @@ const isAuth = (req, res, next) => {
 	try {
 		const decoded = jwt.verify(token, process.env.SECRET_KEY);
 		req.user = decoded;
+		const user = await User.findById(decoded.id);
+		if (user.isVerified === false) {
+			console.log("falseeee");
+			return res.status(401).json({ message: "User blocked" });
+		}
 		next();
 	} catch (error) {
 		return res.status(401).json({ message: "Token is not valid" });

@@ -24,14 +24,11 @@ const ProductsDetails = () => {
 		cartItems.items?.some((item) => item.productId._id === product?._id) ||
 			false
 	);
-	console.log("is in cart ", isInCart);
 
 	const [error, setError] = useState("");
 	const dispatch = useDispatch();
 	const { id } = useParams();
 	const navigate = useNavigate();
-
-	console.log("is in cart", isInCart);
 
 	const checkIsInCart = () => {
 		return cartItems.items?.some((item) => item.productId._id === product?._id);
@@ -158,9 +155,9 @@ const ProductsDetails = () => {
 					<h1 className="text-xl font-bold">{product?.productName}</h1>
 					<p className="text-gray-500">5k Reviews</p>
 					<div className="flex justify-center items-center space-x-2 mt-2">
-						<span className="text-lg font-bold">${product?.salePrice}</span>
+						<span className="text-lg font-bold">₹{product?.salePrice}</span>
 						<span className="line-through text-gray-500">
-							${product?.regularPrice}
+							₹{product?.regularPrice}
 						</span>
 					</div>
 					<p className="mt-4 text-sm">{product?.description}</p>

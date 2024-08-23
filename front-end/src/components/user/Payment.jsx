@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../config/axiosConfig";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, getCarItems } from "../../../redux/slices/cartSlice";
+import { toast } from "react-toastify";
 
 const generateCaptcha = () => {
 	const characters =
@@ -22,7 +23,6 @@ const generateCaptcha = () => {
 
 const PaymentOptions = () => {
 	const userId = useSelector((state) => state.auth.user);
-	console.log("the user id ", userId);
 
 	const items = useSelector((state) => state.cart.cartItems.items);
 
@@ -72,7 +72,7 @@ const PaymentOptions = () => {
 					state: { orderDetails: orderResponse.data },
 				});
 			} else {
-				alert("Order creation failed. Please try again.");
+				toast.error("Order creation failed. Please try again.");
 			}
 		} catch (error) {
 			console.error("Failed to create order:", error);
@@ -267,7 +267,7 @@ const PaymentOptions = () => {
 					</div>
 					<div className="flex justify-between mb-4">
 						<span className="font-medium text-gray-700">Discount:</span>
-						<span className="font-semibold">- ₹{discount.toFixed(2)}</span>
+						<span className="font-semibold"> ₹{discount.toFixed(2)}</span>
 					</div>
 					<div className="flex justify-between mb-4">
 						<span className="font-medium text-gray-700">Shipping:</span>

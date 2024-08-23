@@ -186,12 +186,12 @@ const OrderDetails = () => {
 							<h2 className="text-gray-500 font-semibold text-sm">
 								SHIPPING COST
 							</h2>
-							<p className="text-gray-700 mt-1 text-sm">$30</p>
+							<p className="text-gray-700 mt-1 text-sm">₹30</p>
 						</div>
 						<div>
 							<h2 className="text-gray-500 font-semibold text-sm">DISCOUNT</h2>
 							<p className="text-red-500 mt-1 text-sm">
-								$ {orderData.discount}
+								₹ {orderData.discount}
 							</p>
 						</div>
 						<div className="col-span-4 text-right">
@@ -199,7 +199,7 @@ const OrderDetails = () => {
 								TOTAL AMOUNT
 							</h2>
 							<p className="text-black font-bold text-lg mt-2">
-								${orderData?.theTotelAmount}
+								₹{orderData?.theTotelAmount}
 							</p>
 						</div>
 					</div>

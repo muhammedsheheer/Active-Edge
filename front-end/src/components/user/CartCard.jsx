@@ -93,7 +93,7 @@ const CartCard = () => {
 				`Coupon "${couponCode}" applied! You saved ₹${discountValue.toFixed(2)}`
 			);
 		} else {
-			alert("Invalid coupon code");
+			toast.error("Invalid coupon code");
 			setDiscount(0);
 		}
 	};
@@ -214,7 +214,7 @@ const CartCard = () => {
 						</div>
 						<div className="flex justify-between mb-4">
 							<span className="font-medium text-gray-700">Discount:</span>
-							<span className="font-semibold">- ₹{discount.toFixed(2)}</span>
+							<span className="font-semibold"> ₹{discount.toFixed(2)}</span>
 						</div>
 						<div className="flex justify-between mb-4">
 							<span className="font-medium text-gray-700">Shipping:</span>

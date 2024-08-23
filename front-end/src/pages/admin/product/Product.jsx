@@ -39,7 +39,7 @@ const Product = () => {
 		{ label: "Serial No.", field: "serialNo" },
 		{ label: "Product Name", field: "productname" },
 		{ label: "Category", field: "category" },
-		{ label: "Stock", field: "stock" },
+		{ label: "SizeStock", field: "sizeStock" },
 		{ label: "Price", field: "price" },
 		{ label: "Status", field: "status" },
 		{ label: "Action", field: "action" },
@@ -108,7 +108,19 @@ const Product = () => {
 		),
 		category: product?.category?.categoryName,
 		productID: product?._id,
-		stock: product?.stock,
+		sizeStock: product?.sizes?.map((sizeObj) => {
+			return (
+				<>
+					<div className="mt-2">
+						<span className="bg-gray-900 rounded-md p-1 text-white">
+							{sizeObj.size}
+						</span>{" "}
+						: <span>{sizeObj.stock}</span>
+					</div>
+				</>
+			);
+		}),
+
 		price: product?.salePrice,
 		status: (
 			<div

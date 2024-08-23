@@ -3,7 +3,7 @@ import { PiLineVerticalThin } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import SportsFitBanner from "./SportsFitBanner";
 
-const WomenProductGrid = ({ data }) => {
+const MenProductGrid = ({ data }) => {
 	const [listData, setListData] = useState([]);
 	const [selectedBrands, setSelectedBrands] = useState([]);
 	const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
@@ -96,11 +96,7 @@ const WomenProductGrid = ({ data }) => {
 	return (
 		<>
 			<div className="mb-16">
-				<SportsFitBanner
-					image={
-						"https://images2.minutemediacdn.com/image/upload/c_crop,w_2700,h_1800,x_0,y_754/c_fill,w_1440,ar_3:2,f_auto,q_auto,g_auto/images%2FvoltaxMediaLibrary%2Fmmsport%2F90min_en_international_web%2F01hj6skdmdvrkje7t49x.jpg"
-					}
-				/>
+				<SportsFitBanner image="https://i.eurosport.com/2016/06/25/1883363-39663138-2560-1440.jpg" />
 			</div>
 			<div className="flex flex-col md:flex-row">
 				{/* Filter Section */}
@@ -210,4 +206,4 @@ const WomenProductGrid = ({ data }) => {
 	);
 };
 
-export default WomenProductGrid;
+export default MenProductGrid;
