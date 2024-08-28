@@ -5,6 +5,7 @@ import {
 	getOrderData,
 	getOrderDetailsById,
 	updateProductStatus,
+	// verifyPayment,
 } from "../controller/orderCntroller.js";
 import express from "express";
 import { isAuth, isAuthAdmin } from "../midlware/isAuth.js";
@@ -17,5 +18,6 @@ router.get("/get-order-data", isAuth, isAuthAdmin, getAllOrderData);
 router.get("/get-order-details/:id", isAuth, isAuthAdmin, getOrderDetailsById);
 router.put("/update-product-status/:id", isAuth, updateProductStatus);
 router.put("/user-order-status-change", isAuth, cancelOrder);
+// router.post("/verify-payment", isAuth, verifyPayment);
 
 export default router;

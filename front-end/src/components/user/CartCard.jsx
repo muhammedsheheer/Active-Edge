@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdDeleteForever } from "react-icons/md";
+import { FaTag } from "react-icons/fa";
 import {
 	getCarItems,
 	removeCartItem,
@@ -8,16 +9,44 @@ import {
 } from "../../../redux/slices/cartSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import api from "../../config/axiosConfig";
+import CouponModal from "./CoupenModal";
 
 const CartCard = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const cartItems = useSelector((state) => state.cart.cartItems);
 	const [localCartItems, setLocalCartItems] = useState([]);
+	const [coupens, setCoupens] = useState([]);
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [couponCode, setCouponCode] = useState("");
 	const [discount, setDiscount] = useState(0);
 	const MAX_QUANTITY = 5;
+
+	//test start
+	const [showCouponModal, setShowCouponModal] = useState(false);
+	const [selectedCoupon, setSelectedCoupon] = useState(null);
+
+	const handleSelectCoupon = (coupon) => {
+		setSelectedCoupon(coupon);
+		setShowCouponModal(false);
+	};
+
+	//test end
+
+	const fetchCoupens = async () => {
+		try {
+			const response = await api.get("/coupen/get-coupen");
+			console.log("the  response is of coupen", response.data.coupens);
+			setCoupens(response.data.coupens);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchCoupens();
+	}, []);
 
 	useEffect(() => {
 		dispatch(getCarItems());
@@ -85,19 +114,6 @@ const CartCard = () => {
 		});
 	};
 
-	const handleApplyCoupon = () => {
-		if (couponCode === "DISCOUNT10") {
-			const discountValue = totalAmount * 0.1;
-			setDiscount(discountValue);
-			toast.success(
-				`Coupon "${couponCode}" applied! You saved ₹${discountValue.toFixed(2)}`
-			);
-		} else {
-			toast.error("Invalid coupon code");
-			setDiscount(0);
-		}
-	};
-
 	const handleProceedToCheckout = () => {
 		navigate("/checkOut", {
 			state: {
@@ -107,12 +123,37 @@ const CartCard = () => {
 		});
 	};
 
-	return (
-		<div className="container mx-auto py-10 px-4">
-			<h1 className="text-3xl font-bold mb-8 text-center">
-				Your Shopping Cart
-			</h1>
+	const handleShopNow = () => {
+		navigate("/shop");
+	};
 
+	//herae
+
+	useEffect(() => {
+		if (selectedCoupon) {
+			const handleApplyCoupon = async () => {
+				try {
+					const response = await api.post("/coupen/validate-coupen", {
+						code: selectedCoupon.code,
+						purchaseAmount: totalAmount,
+					});
+					const { discountAmount, message } = response.data;
+
+					setDiscount(discountAmount);
+					toast.success(`${message}! You saved ₹${discountAmount.toFixed(2)}`);
+				} catch (error) {
+					toast.error(error.response.data.message || "Invalid coupon code");
+					setDiscount(0);
+				}
+			};
+
+			handleApplyCoupon();
+			fetchCoupens();
+		}
+	}, [selectedCoupon]);
+
+	return (
+		<div className="container mx-auto px-4">
 			{localCartItems.length > 0 ? (
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 					{/* Cart Items */}
@@ -206,7 +247,20 @@ const CartCard = () => {
 					</div>
 
 					{/* Cart Summary and Coupon */}
+
 					<div className="p-6 border rounded-lg bg-white shadow-sm">
+						<div className="flex flex-col sm:flex-row items-center justify-between border-b mb-8 p-4">
+							<div className="flex items-center mb-4 sm:mb-0">
+								<FaTag className="text-lg text-black mr-2" />
+								<span className="font-medium text-gray-800">Apply Coupons</span>
+							</div>
+							<button
+								onClick={() => setShowCouponModal(true)}
+								className=" text-black font-medium text-xs py-1 px-3 rounded-sm border-2 border-red-400 text-red-500 hover:bg-red-100 transition duration-300"
+							>
+								APPLY
+							</button>
+						</div>
 						<h2 className="text-xl font-semibold mb-6">Price Details</h2>
 						<div className="flex justify-between mb-4">
 							<span className="font-medium text-gray-700">Subtotal:</span>
@@ -224,35 +278,43 @@ const CartCard = () => {
 							<span>Total:</span>
 							<span>₹{(totalAmount + 30 - discount).toFixed(2)}</span>
 						</div>
-
-						<div className="mt-6">
-							<h3 className="text-lg font-medium mb-2">Have a coupon?</h3>
-							<div className="flex items-center">
-								<input
-									type="text"
-									className="border border-gray-300 rounded-l-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
-									placeholder="Enter coupon code"
-									value={couponCode}
-									onChange={(e) => setCouponCode(e.target.value)}
-								/>
-								<button
-									className="bg-gray-950 text-white px-3 py-2 rounded-r-md hover:bg-gray-700 transition duration-200"
-									onClick={handleApplyCoupon}
-								>
-									Apply
-								</button>
-							</div>
-						</div>
 						<button
-							className="mt-6 w-full bg-gray-950 text-white py-3 rounded-md hover:bg-gray-700 transition duration-200"
+							className="mt-6 w-full bg-gray-950 text-white py-2 rounded-md hover:bg-gray-700 transition duration-200"
 							onClick={handleProceedToCheckout}
 						>
 							Proceed to Checkout
 						</button>
 					</div>
+
+					{showCouponModal && (
+						<CouponModal
+							purchaseAmount={totalAmount}
+							coupons={coupens}
+							onSelectCoupon={handleSelectCoupon}
+							onClose={() => setShowCouponModal(false)}
+						/>
+					)}
 				</div>
 			) : (
-				<p className="text-center text-gray-600 mt-8">Your cart is empty.</p>
+				<div className="flex flex-col items-center justify-center  bg-white px-4">
+					<h2 className="text-lg font-bold text-gray-800 mb-2">
+						Your cart is empty
+					</h2>
+					<p className="text-gray-500 text-center mb-6">
+						Just relax, let us help you find some first-class products.
+					</p>
+					<img
+						src="https://i.pinimg.com/564x/07/28/69/072869cc9818fbce38b0451c118ec90e.jpg"
+						alt="Empty Wishlist"
+						className="w-96 h-56 mb-6"
+					/>
+					<button
+						onClick={handleShopNow}
+						className="border-2 border-black bg-black text-white py-2 px-6 rounded-md hover:bg-gray-800 transition duration-200"
+					>
+						CONTINUE SHOPPING
+					</button>
+				</div>
 			)}
 		</div>
 	);

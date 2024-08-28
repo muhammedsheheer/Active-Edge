@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../../components/user/ProductCard";
 import api from "../../config/axiosConfig";
 import SportsFitBanner from "../../components/user/SportsFitBanner";
+import ShopNowCard from "../../components/user/ShopNowCard";
 
 const HomePage = () => {
 	const [newProducts, setNewProducts] = useState([]);
@@ -36,7 +37,9 @@ const HomePage = () => {
 					<ProductCard key={product._id} productData={product} />
 				))}
 			</div>
-			<div className="mt-4">
+			<ShopNowCard />
+
+			<div className="mt-40">
 				<img
 					className="w-auto h-auto"
 					src="../../../public/free 1.png"

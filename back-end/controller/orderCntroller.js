@@ -1,5 +1,97 @@
 import Products from "../model/productSchema.js";
 import Order from "../model/orderSchema.js";
+import Razorpay from "razorpay";
+import crypto from "crypto";
+
+// const createOrder = async (req, res) => {
+// 	const {
+// 		userId,
+// 		items,
+// 		shippingAddress,
+// 		paymentMethod,
+// 		theTotelAmount,
+// 		discount,
+// 	} = req.body;
+
+// 	try {
+// 		for (let item of items) {
+// 			const product = await Products.findById(item.productId);
+
+// 			if (!product) {
+// 				return res
+// 					.status(404)
+// 					.json({ message: `Product not found: ${item.productId}` });
+// 			}
+
+// 			const sizeIndex = product.sizes.findIndex(
+// 				(size) => size.size === item.size
+// 			);
+
+// 			if (sizeIndex === -1) {
+// 				return res.status(400).json({
+// 					message: `Size ${item.size} not available for product ${product.name}`,
+// 				});
+// 			}
+
+// 			if (product.sizes[sizeIndex].stock < item.quantity) {
+// 				return res.status(400).json({
+// 					message: `Insufficient stock for product ${product.productName} in size ${item.size}. Available stock: ${product.sizes[sizeIndex].stock}`,
+// 				});
+// 			}
+// 		}
+
+// 		const newOrder = new Order({
+// 			userId,
+// 			items,
+// 			theTotelAmount,
+// 			shippingAddress,
+// 			paymentMethod,
+// 			discount,
+// 		});
+
+// 		const savedOrder = await newOrder.save();
+
+// 		for (let item of items) {
+// 			const product = await Products.findById(item.productId);
+
+// 			const sizeIndex = product.sizes.findIndex(
+// 				(size) => size.size === item.size
+// 			);
+
+// 			if (sizeIndex !== -1) {
+// 				product.sizes[sizeIndex].stock -= item.quantity;
+// 				await product.save();
+// 			}
+// 		}
+
+// 		return res.status(201).json({
+// 			message: "Order confirmed successfully",
+// 			order: savedOrder,
+// 		});
+// 	} catch (error) {
+// 		console.log("Error confirming order:", error);
+// 		res.status(500).json({ message: "Failed to confirm order" });
+// 	}
+// };
+
+const getOrderData = async (req, res) => {
+	try {
+		const userId = req.user.id;
+		const order = await Order.find({ userId }).populate({
+			path: "items.productId",
+			populate: {
+				path: "brand",
+			},
+		});
+
+		if (!order) {
+			return res.status(404).json({ message: "No orders found for this user" });
+		}
+		return res.status(200).json({ message: "Order get successfully", order });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
 
 const createOrder = async (req, res) => {
 	const {
@@ -10,7 +102,6 @@ const createOrder = async (req, res) => {
 		theTotelAmount,
 		discount,
 	} = req.body;
-	console.log("the log body", req.body);
 
 	try {
 		for (let item of items) {
@@ -38,6 +129,18 @@ const createOrder = async (req, res) => {
 				});
 			}
 		}
+		const razorpay = new Razorpay({
+			key_id: process.env.RAZORPAY_KEY_ID,
+			key_secret: process.env.RAZORPAY_KEY_SECRET,
+		});
+
+		const options = {
+			amount: theTotelAmount * 100,
+			currency: "INR",
+			receipt: `receipt_order_${Date.now()}`,
+		};
+
+		const razorpayOrder = await razorpay.orders.create(options);
 
 		const newOrder = new Order({
 			userId,
@@ -46,6 +149,7 @@ const createOrder = async (req, res) => {
 			shippingAddress,
 			paymentMethod,
 			discount,
+			razorpayOrderId: razorpayOrder.id,
 		});
 
 		const savedOrder = await newOrder.save();
@@ -62,34 +166,18 @@ const createOrder = async (req, res) => {
 				await product.save();
 			}
 		}
-		console.log(savedOrder);
 
 		return res.status(201).json({
-			message: "Order confirmed successfully",
+			message: "Order created successfully",
 			order: savedOrder,
+			razorpayOrderId: razorpayOrder.id,
+			amount: razorpayOrder.amount,
+			currency: razorpayOrder.currency,
+			key: process.env.RAZORPAY_KEY_ID,
 		});
 	} catch (error) {
 		console.log("Error confirming order:", error);
-		res.status(500).json({ message: "Failed to confirm order" });
-	}
-};
-
-const getOrderData = async (req, res) => {
-	try {
-		const userId = req.user.id;
-		const order = await Order.find({ userId }).populate({
-			path: "items.productId",
-			populate: {
-				path: "brand",
-			},
-		});
-
-		if (!order) {
-			return res.status(404).json({ message: "No orders found for this user" });
-		}
-		return res.status(200).json({ message: "Order get successfully", order });
-	} catch (error) {
-		return res.status(500).json({ message: error.message });
+		res.status(500).json({ message: "Failed to create order" });
 	}
 };
 
@@ -235,6 +323,36 @@ const cancelOrder = async (req, res) => {
 	}
 };
 
+// const verifyPayment = async (req, res) => {
+// 	try {
+// 		const {
+// 			orderCreationId,
+// 			razorpayPaymentId,
+// 			razorpayOrderId,
+// 			razorpaySignature,
+// 		} = req.body;
+
+// 		const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
+// 		shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
+// 		const digest = shasum.digest("hex");
+
+// 		if (digest !== razorpaySignature) {
+// 			return res
+// 				.status(400)
+// 				.json({ success: false, message: "Invalid payment signature" });
+// 		}
+
+// 		return res
+// 			.status(200)
+// 			.json({ success: true, message: "Payment verified successfully" });
+// 	} catch (error) {
+// 		console.error("Payment verification error:", error);
+// 		return res
+// 			.status(500)
+// 			.json({ success: false, message: "Failed to verify payment" });
+// 	}
+// };
+
 export {
 	createOrder,
 	getOrderData,
@@ -242,4 +360,5 @@ export {
 	getOrderDetailsById,
 	updateProductStatus,
 	cancelOrder,
+	// verifyPayment,
 };

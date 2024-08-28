@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAddress, removeAddress } from "../../../redux/slices/addressSlice";
 import { toast } from "react-toastify";
+import ConfirmationModal from "../admin/ConfirmationModal";
 
 const CheckOut = () => {
 	const dispatch = useDispatch();
@@ -13,6 +14,8 @@ const CheckOut = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedAddress, setSelectedAddress] = useState(null);
 	const [selectedAddressId, setSelectedAddressId] = useState(null);
+	const [open, setOpen] = useState(false);
+	const [addressIdRemove, setAddressIdRemove] = useState(null);
 
 	useEffect(() => {
 		dispatch(getAddress());
@@ -41,8 +44,15 @@ const CheckOut = () => {
 		setIsModalOpen(true);
 	};
 
-	const handleRemove = (addressId) => {
-		dispatch(removeAddress(addressId));
+	const handleConfirmationRemove = (addressId) => {
+		setAddressIdRemove(addressId);
+		setOpen(true);
+	};
+
+	const confirmRemove = () => {
+		dispatch(removeAddress(addressIdRemove));
+		setOpen(false);
+		setAddressIdRemove(null);
 	};
 
 	const handleAddressChange = (addressId) => {
@@ -110,7 +120,7 @@ const CheckOut = () => {
 						</p>
 						<div className="flex justify-start mt-3">
 							<button
-								onClick={() => handleRemove(address._id)}
+								onClick={() => handleConfirmationRemove(address._id)}
 								className="border border-black bg-black text-white px-3 py-1 text-xs rounded mr-2 hover:bg-black hover:text-white transition duration-150"
 							>
 								REMOVE
@@ -162,6 +172,12 @@ const CheckOut = () => {
 					Continue
 				</button>
 			</div>
+			<ConfirmationModal
+				open={open}
+				onClose={() => setOpen(false)}
+				message={"Are sure you want to delete this address "}
+				onConfirm={confirmRemove}
+			/>
 		</div>
 	);
 };

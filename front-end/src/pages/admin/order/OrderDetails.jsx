@@ -92,8 +92,8 @@ const OrderDetails = () => {
 				),
 				brand: item.productId?.brand?.brandName || "Unknown Brand",
 				quantity: item.quantity,
-				price: item.productId?.salePrice,
-				totalPrice: `$${item.quantity * item.productId?.salePrice}`,
+				price: `₹${item.productId?.salePrice}`,
+				totalPrice: `₹${item.quantity * item.productId?.salePrice}`,
 				status: (
 					<select
 						className={`${

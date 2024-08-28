@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const NavBar = () => {
 	const { user } = useSelector((state) => state.auth);
-	const items = useSelector((state) => state.cart?.cartItems?.items);
+	const items = useSelector((state) => state.cart?.cartItems.items);
 	const dispatch = useDispatch();
 
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

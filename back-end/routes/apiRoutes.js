@@ -6,6 +6,7 @@ import productRoutes from "./productRoutes.js";
 import wishListRoutes from "./wishListRoutes.js";
 import cartRoutes from "./cartRoutes.js";
 import orderRoutes from "./orderRoutes.js";
+import coupenRoutes from "./coupenRoutes.js";
 
 const app = express.Router();
 
@@ -16,5 +17,6 @@ app.use("/product", productRoutes);
 app.use("/wishlist", wishListRoutes);
 app.use("/cart", cartRoutes);
 app.use("/order", orderRoutes);
+app.use("/coupen", coupenRoutes);
 
 export default app;

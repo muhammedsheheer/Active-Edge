@@ -30,17 +30,14 @@ import Shop from "./pages/user/Shop.jsx";
 import ProfileLayout from "./layout/ProfileLayout.jsx";
 import Men from "./pages/user/Men.jsx";
 import Kids from "./pages/user/Kids.jsx";
+import OrderDetailses from "./pages/user/OrderDetilses.jsx";
+import Coupen from "./pages/admin/coupen/Coupen.jsx";
 
 function App() {
 	return (
 		<>
 			<ToastContainer />
 			<Routes>
-				<Route element={<AuthanticateRoute />}>
-					<Route path="/login" element={<UserLogin />} />
-					<Route path="/register" element={<UserRegister />} />
-					<Route path="/otp" element={<OTPVerification />} />
-				</Route>
 				<Route element={<UserLayout />}>
 					<Route index path="/" element={<HomePage />} />
 					<Route path="/productDetials/:id" element={<ProductDetailPage />} />
@@ -62,7 +59,14 @@ function App() {
 						<Route path="/checkOut" element={<CheckOutPage />} />
 						<Route path="/payment" element={<PaymentPage />} />
 						<Route path="/confirmation" element={<OrderConfirmation />} />
+						<Route path="/orderDetails" element={<OrderDetailses />} />
 					</Route>
+				</Route>
+				{/* Authanticate route */}
+				<Route element={<AuthanticateRoute />}>
+					<Route path="/login" element={<UserLogin />} />
+					<Route path="/register" element={<UserRegister />} />
+					<Route path="/otp" element={<OTPVerification />} />
 				</Route>
 				{/* {admin routes} */}
 				<Route element={<ProtectedAdminRoute />}>
@@ -74,6 +78,7 @@ function App() {
 						<Route path="customers" element={<Customers />} />
 						<Route path="orderDetails/:id" element={<OrderDetails />} />
 						<Route path="orders" element={<Order />} />
+						<Route path="coupens" element={<Coupen />} />
 					</Route>
 				</Route>
 			</Routes>
