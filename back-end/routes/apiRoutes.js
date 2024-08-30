@@ -7,6 +7,7 @@ import wishListRoutes from "./wishListRoutes.js";
 import cartRoutes from "./cartRoutes.js";
 import orderRoutes from "./orderRoutes.js";
 import coupenRoutes from "./coupenRoutes.js";
+import walletRoutes from "./walletRoutes.js";
 
 const app = express.Router();
 
@@ -18,5 +19,6 @@ app.use("/wishlist", wishListRoutes);
 app.use("/cart", cartRoutes);
 app.use("/order", orderRoutes);
 app.use("/coupen", coupenRoutes);
+app.use("/wallet", walletRoutes);
 
 export default app;

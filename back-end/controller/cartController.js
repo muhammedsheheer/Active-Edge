@@ -3,7 +3,6 @@ import Product from "../model/productSchema.js";
 
 const addToCart = async (req, res) => {
 	try {
-		console.log(req.body);
 		const { productId, quantity, size } = req.body;
 
 		const userId = req.user.id;
@@ -24,7 +23,6 @@ const addToCart = async (req, res) => {
 			const existingItem = cart.items.find(
 				(item) => item.productId.toString() === productId && item.size === size
 			);
-			console.log(existingItem);
 			if (existingItem) {
 				existingItem.quantity += quantity;
 			} else {
@@ -48,7 +46,6 @@ const getToCart = async (req, res) => {
 			path: "items.productId",
 			populate: { path: "brand" },
 		});
-		console.log("the cart", cart);
 
 		if (!cart) {
 			return res.status(404).json({ message: "Cart not found" });

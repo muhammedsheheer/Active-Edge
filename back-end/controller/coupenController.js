@@ -17,7 +17,6 @@ const createCoupen = async (req, res) => {
 			maxDiscountAmount,
 			minimumPurchaseAmount,
 		});
-		console.log("coupen  data", coupen);
 		await coupen.save();
 		res.status(201).json({ message: "Coupen created successfully", coupen });
 	} catch (error) {
@@ -29,13 +28,15 @@ const createCoupen = async (req, res) => {
 
 const getCoupen = async (req, res) => {
 	try {
-		// const coupens = await Coupen.find();
 		const userId = req.user.id;
 		const coupens = await Coupen.find({ usedBy: { $ne: userId } });
+
 		return res
 			.status(200)
 			.json({ message: "Coupen fetched successfully", coupens });
 	} catch (error) {
+		console.log(error);
+
 		return res.status(500).json({ message: error.message });
 	}
 };
@@ -69,6 +70,7 @@ const deleteCoupen = async (req, res) => {
 const validateCoupen = async (req, res) => {
 	try {
 		const { code, purchaseAmount } = req.body;
+		console.log("the get ", req.body);
 
 		const userId = req.user.id;
 
@@ -116,6 +118,29 @@ const validateCoupen = async (req, res) => {
 	}
 };
 
+const unValidateCoupen = async (req, res) => {
+	try {
+		const { code } = req.body;
+		const userId = req.user.id;
+
+		const coupen = await Coupen.findOne({ code });
+
+		if (!coupen) {
+			return res.status(404).json({ message: "Coupon not found" });
+		}
+
+		coupen.usedBy = coupen.usedBy.filter(
+			(id) => id.toString() !== userId.toString()
+		);
+
+		await coupen.save();
+
+		return res.status(200).json({ message: "Coupon removed successfully" });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
 const adminGetCoupen = async (req, res) => {
 	try {
 		const coupens = await Coupen.find();
@@ -135,4 +160,5 @@ export {
 	deleteCoupen,
 	validateCoupen,
 	adminGetCoupen,
+	unValidateCoupen,
 };

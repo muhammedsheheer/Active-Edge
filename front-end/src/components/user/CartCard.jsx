@@ -17,35 +17,25 @@ const CartCard = () => {
 	const dispatch = useDispatch();
 	const cartItems = useSelector((state) => state.cart.cartItems);
 	const [localCartItems, setLocalCartItems] = useState([]);
-	const [coupens, setCoupens] = useState([]);
+	const [coupons, setCoupons] = useState([]);
 	const [totalAmount, setTotalAmount] = useState(0);
-	const [couponCode, setCouponCode] = useState("");
 	const [discount, setDiscount] = useState(0);
+	const [appliedCoupon, setAppliedCoupon] = useState(null);
 	const MAX_QUANTITY = 5;
 
-	//test start
 	const [showCouponModal, setShowCouponModal] = useState(false);
-	const [selectedCoupon, setSelectedCoupon] = useState(null);
 
-	const handleSelectCoupon = (coupon) => {
-		setSelectedCoupon(coupon);
-		setShowCouponModal(false);
-	};
-
-	//test end
-
-	const fetchCoupens = async () => {
+	const fetchCoupons = async () => {
 		try {
 			const response = await api.get("/coupen/get-coupen");
-			console.log("the  response is of coupen", response.data.coupens);
-			setCoupens(response.data.coupens);
+			setCoupons(response.data.coupens);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
 	useEffect(() => {
-		fetchCoupens();
+		fetchCoupons();
 	}, []);
 
 	useEffect(() => {
@@ -114,11 +104,48 @@ const CartCard = () => {
 		});
 	};
 
+	const removeCoupon = async (coupon) => {
+		try {
+			const response = await api.post("/coupen/remove-coupen", {
+				code: coupon.code,
+			});
+			toast.info("Coupon removed successfully!");
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const handleSelectCoupon = (coupon) => {
+		if (appliedCoupon?.code === coupon.code) {
+			setAppliedCoupon(null);
+			setDiscount(0);
+			removeCoupon(coupon);
+		} else {
+			setAppliedCoupon(coupon);
+			applyCoupon(coupon);
+		}
+	};
+
+	const applyCoupon = async (coupon) => {
+		try {
+			const response = await api.post("/coupen/validate-coupen", {
+				code: coupon.code,
+				purchaseAmount: totalAmount,
+			});
+			const { discountAmount, message } = response.data;
+			setDiscount(discountAmount);
+			toast.success(`${message}! You saved ₹${discountAmount.toFixed(2)}`);
+		} catch (error) {
+			toast.error(error.response.data.message || "Invalid coupon code");
+			setDiscount(0);
+		}
+	};
+
 	const handleProceedToCheckout = () => {
 		navigate("/checkOut", {
 			state: {
 				totalAmount,
 				discount,
+				appliedCoupon,
 			},
 		});
 	};
@@ -126,31 +153,6 @@ const CartCard = () => {
 	const handleShopNow = () => {
 		navigate("/shop");
 	};
-
-	//herae
-
-	useEffect(() => {
-		if (selectedCoupon) {
-			const handleApplyCoupon = async () => {
-				try {
-					const response = await api.post("/coupen/validate-coupen", {
-						code: selectedCoupon.code,
-						purchaseAmount: totalAmount,
-					});
-					const { discountAmount, message } = response.data;
-
-					setDiscount(discountAmount);
-					toast.success(`${message}! You saved ₹${discountAmount.toFixed(2)}`);
-				} catch (error) {
-					toast.error(error.response.data.message || "Invalid coupon code");
-					setDiscount(0);
-				}
-			};
-
-			handleApplyCoupon();
-			fetchCoupens();
-		}
-	}, [selectedCoupon]);
 
 	return (
 		<div className="container mx-auto px-4">
@@ -247,53 +249,61 @@ const CartCard = () => {
 					</div>
 
 					{/* Cart Summary and Coupon */}
-
-					<div className="p-6 border rounded-lg bg-white shadow-sm">
+					<div className=" p-6 border rounded-lg bg-white shadow-sm">
 						<div className="flex flex-col sm:flex-row items-center justify-between border-b mb-8 p-4">
-							<div className="flex items-center mb-4 sm:mb-0">
+							<div className="flex items-center mb-4 sm:mb-0 ">
 								<FaTag className="text-lg text-black mr-2" />
-								<span className="font-medium text-gray-800">Apply Coupons</span>
+								<span className="font-medium text-gray-800">
+									{" "}
+									{appliedCoupon ? "Coupon Applied" : "Apply Coupons"}
+								</span>
 							</div>
+
 							<button
 								onClick={() => setShowCouponModal(true)}
-								className=" text-black font-medium text-xs py-1 px-3 rounded-sm border-2 border-red-400 text-red-500 hover:bg-red-100 transition duration-300"
+								className=" font-medium text-xs py-1 px-3 rounded-sm border-2 border-red-400 text-red-500 hover:bg-red-100 transition duration-300"
 							>
-								APPLY
+								{appliedCoupon ? "Edit" : "Apply"}
 							</button>
 						</div>
+						<div className="text-sm text-green-600 mb-4">
+							{appliedCoupon
+								? `You saved additional₹${discount.toFixed(2)} `
+								: ""}
+						</div>
+
 						<h2 className="text-xl font-semibold mb-6">Price Details</h2>
 						<div className="flex justify-between mb-4">
 							<span className="font-medium text-gray-700">Subtotal:</span>
 							<span className="font-semibold">₹{totalAmount.toFixed(2)}</span>
 						</div>
-						<div className="flex justify-between mb-4">
-							<span className="font-medium text-gray-700">Discount:</span>
-							<span className="font-semibold"> ₹{discount.toFixed(2)}</span>
-						</div>
+						{appliedCoupon && (
+							<div className="flex justify-between mb-4">
+								<span className="font-medium text-gray-700">
+									Discount ({appliedCoupon.code}):
+								</span>
+								<span className="font-semibold text-green-600">
+									-₹{discount.toFixed(2)}
+								</span>
+							</div>
+						)}
 						<div className="flex justify-between mb-4">
 							<span className="font-medium text-gray-700">Shipping:</span>
 							<span className="font-semibold">₹30.00</span>
 						</div>
-						<div className="flex justify-between font-bold text-lg mb-4">
-							<span>Total:</span>
-							<span>₹{(totalAmount + 30 - discount).toFixed(2)}</span>
+						<div className="flex justify-between mb-4">
+							<span className="font-medium text-gray-700">Total:</span>
+							<span className="font-semibold">
+								₹{(totalAmount + 30 - discount).toFixed(2)}
+							</span>
 						</div>
 						<button
-							className="mt-6 w-full bg-gray-950 text-white py-2 rounded-md hover:bg-gray-700 transition duration-200"
+							className="w-full bg-black text-white py-2 rounded-md mt-4 hover:bg-gray-800 transition duration-300"
 							onClick={handleProceedToCheckout}
 						>
 							Proceed to Checkout
 						</button>
 					</div>
-
-					{showCouponModal && (
-						<CouponModal
-							purchaseAmount={totalAmount}
-							coupons={coupens}
-							onSelectCoupon={handleSelectCoupon}
-							onClose={() => setShowCouponModal(false)}
-						/>
-					)}
 				</div>
 			) : (
 				<div className="flex flex-col items-center justify-center  bg-white px-4">
@@ -304,7 +314,7 @@ const CartCard = () => {
 						Just relax, let us help you find some first-class products.
 					</p>
 					<img
-						src="https://i.pinimg.com/564x/07/28/69/072869cc9818fbce38b0451c118ec90e.jpg"
+						src="../../../public/EmptycartImage.png"
 						alt="Empty Wishlist"
 						className="w-96 h-56 mb-6"
 					/>
@@ -315,6 +325,17 @@ const CartCard = () => {
 						CONTINUE SHOPPING
 					</button>
 				</div>
+			)}
+
+			{/* Coupon Modal */}
+			{showCouponModal && (
+				<CouponModal
+					coupons={coupons}
+					onSelectCoupon={handleSelectCoupon}
+					closeModal={() => setShowCouponModal(false)}
+					appliedCoupon={appliedCoupon}
+					purchaseAmount={totalAmount}
+				/>
 			)}
 		</div>
 	);

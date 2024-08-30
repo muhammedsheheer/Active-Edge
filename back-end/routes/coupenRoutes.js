@@ -6,6 +6,7 @@ import {
 	deleteCoupen,
 	editCoupen,
 	getCoupen,
+	unValidateCoupen,
 	validateCoupen,
 } from "../controller/coupenController.js";
 
@@ -17,5 +18,6 @@ router.put("/update-coupen/:id", isAuth, isAuthAdmin, editCoupen);
 router.delete("/delete-coupen/:id", isAuth, isAuthAdmin, deleteCoupen);
 router.post("/validate-coupen", isAuth, validateCoupen);
 router.get("/admin-get-coupens", isAuth, isAuthAdmin, adminGetCoupen);
+router.post("/remove-coupen", isAuth, unValidateCoupen);
 
 export default router;

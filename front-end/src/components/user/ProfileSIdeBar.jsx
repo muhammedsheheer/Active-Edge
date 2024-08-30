@@ -333,7 +333,7 @@ const ProfileSideBar = () => {
 						Orders
 					</Link>
 					<Link
-						to="/wallet"
+						to="wallet"
 						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
 					>
 						<FaWallet />

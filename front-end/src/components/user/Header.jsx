@@ -8,13 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 const NavBar = () => {
 	const { user } = useSelector((state) => state.auth);
-	const items = useSelector((state) => state.cart?.cartItems.items);
+	const items = useSelector(
+		(state) => state.cart?.cartItems?.items?.length || 0
+	);
 	const dispatch = useDispatch();
 
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [searchVisible, setSearchVisible] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
-	const cartItemCount = items?.length;
 
 	const inputRef = useRef(null);
 
@@ -143,21 +144,21 @@ const NavBar = () => {
 						)}
 
 						<Link
-							to="/wishlist"
+							to={user ? "/wishlist" : "/login"}
 							className="ml-3 p-1 rounded-full text-black hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
 						>
 							<span className="sr-only">Favorites</span>
 							<CiHeart className="h-6 w-6" />
 						</Link>
 						<Link
-							to="/cart"
+							to={user ? "/cart" : "/login"}
 							className="relative ml-3 p-1 rounded-full text-black hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
 						>
 							<span className="sr-only">Cart</span>
 							<CiShoppingCart className="h-6 w-6" />
-							{cartItemCount > 0 && (
+							{items > 0 && (
 								<span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-medium text-white bg-red-500 rounded-full">
-									{cartItemCount}
+									{items}
 								</span>
 							)}
 						</Link>

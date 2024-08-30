@@ -32,6 +32,7 @@ import Men from "./pages/user/Men.jsx";
 import Kids from "./pages/user/Kids.jsx";
 import OrderDetailses from "./pages/user/OrderDetilses.jsx";
 import Coupen from "./pages/admin/coupen/Coupen.jsx";
+import WalletPage from "./pages/user/WalletPage.jsx";
 
 function App() {
 	return (
@@ -52,6 +53,7 @@ function App() {
 								<Route path="editProfile" element={<EditProfile />} />
 								<Route path="address" element={<AddressPage />} />
 								<Route path="orderHistory" element={<OrderHistory />} />
+								<Route path="wallet" element={<WalletPage />} />
 							</Route>
 						</Route>
 						<Route path="/cart" element={<Cart />} />

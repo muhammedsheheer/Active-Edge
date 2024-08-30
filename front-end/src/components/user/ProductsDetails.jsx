@@ -35,12 +35,6 @@ const ProductsDetails = () => {
 	};
 
 	useEffect(() => {
-		if (user) {
-			dispatch(getCarItems());
-		}
-	}, [dispatch]);
-
-	useEffect(() => {
 		if (product && cartItems.items) {
 			setIsInCart(checkIsInCart());
 		}
@@ -66,6 +60,13 @@ const ProductsDetails = () => {
 			toast.error("Faild to add");
 		}
 	};
+
+	useEffect(() => {
+		if (user) {
+			dispatch(getCarItems());
+		}
+	}, [dispatch]);
+
 	useEffect(() => {
 		fetchProductDetails();
 	}, [id]);

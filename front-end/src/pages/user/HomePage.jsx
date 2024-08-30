@@ -50,4 +50,4 @@ const HomePage = () => {
 	);
 };
 
-export default React.memo(HomePage);
+export default HomePage;

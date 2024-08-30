@@ -16,7 +16,6 @@ const getAllUser = async (req, res) => {
 const getUserDetails = async (req, res) => {
 	try {
 		const userId = req.user;
-		console.log(userId);
 
 		const userData = await User.findById(userId.id).select("-password");
 		if (!userData) {
@@ -62,6 +61,8 @@ const updateUserDetails = async (req, res) => {
 	try {
 		const userId = req.user;
 		const { name, phone, dpImage } = req.body;
+		console.log("the user body", req.body);
+
 		const user = await User.findById(userId.id);
 		if (!user) {
 			return res.status(400).json({ message: "User not founded" });
@@ -225,7 +226,6 @@ const editAddress = async (req, res) => {
 			return res.status(404).json({ message: "Address not found" });
 		}
 
-		// Update the address details
 		user.addresses[addressIndex] = {
 			...user.addresses[addressIndex],
 			name,
