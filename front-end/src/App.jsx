@@ -33,6 +33,7 @@ import Kids from "./pages/user/Kids.jsx";
 import OrderDetailses from "./pages/user/OrderDetilses.jsx";
 import Coupen from "./pages/admin/coupen/Coupen.jsx";
 import WalletPage from "./pages/user/WalletPage.jsx";
+import Return from "./pages/admin/return/Return.jsx";
 
 function App() {
 	return (
@@ -81,6 +82,7 @@ function App() {
 						<Route path="orderDetails/:id" element={<OrderDetails />} />
 						<Route path="orders" element={<Order />} />
 						<Route path="coupens" element={<Coupen />} />
+						<Route path="returnes" element={<Return />} />
 					</Route>
 				</Route>
 			</Routes>

@@ -19,9 +19,13 @@ const ShopNowCard = () => {
 	};
 	return (
 		<div className="mt-12">
-			<h2 className="text-3xl font-bold text-center mb-8">
-				Shop Our Latest Collection
+			<h2 className="text-4xl font-extrabold text-center mb-10 text-gray-900 leading-snug tracking-wide">
+				<span className="font-light">Shop</span>
+				<span className="font-extrabold italic text-transparent bg-clip-text bg-gradient-to-r from-black to-gray-400">
+					Our Latest Collection
+				</span>
 			</h2>
+
 			<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 mt-8">
 				{/* Men's Collection */}
 				<div>

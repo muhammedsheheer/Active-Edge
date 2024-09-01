@@ -50,7 +50,25 @@ const OrderDetails = () => {
 				availableOptions = ["Shipped", "Delivered", "Cancelled"];
 				break;
 			case "Delivered":
-				availableOptions = ["Delivered"];
+				availableOptions = [
+					"Delivered",
+					"ReturnInitialized",
+					"ReturnAccepted",
+					"ReturnRejected",
+				];
+				break;
+			case "ReturnInitialized":
+				availableOptions = ["ReturnAccepted", "ReturnRejected"];
+				break;
+			case "ReturnAccepted":
+				availableOptions = ["ReturnAccepted"];
+				break;
+			case "ReturnRejected":
+				availableOptions = [
+					"ReturnInitialized",
+					"ReturnAccepted",
+					"ReturnRejected",
+				];
 				break;
 			case "Cancelled":
 				availableOptions = ["Cancelled"];

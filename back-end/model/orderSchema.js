@@ -19,7 +19,15 @@ const orderSchema = new Schema(
 				size: { type: String, required: true },
 				status: {
 					type: String,
-					enum: ["Pending", "Shipped", "Delivered", "Cancelled"],
+					enum: [
+						"Pending",
+						"Shipped",
+						"Delivered",
+						"Cancelled",
+						"ReturnInitialized",
+						"ReturnAccepted",
+						"ReturnRejected",
+					],
 					default: "Pending",
 				},
 			},
@@ -50,7 +58,15 @@ const orderSchema = new Schema(
 		},
 		orderStatus: {
 			type: String,
-			enum: ["Pending", "Shipped", "Delivered", "Cancelled"],
+			enum: [
+				"Pending",
+				"Shipped",
+				"Delivered",
+				"Cancelled",
+				"ReturnInitialized",
+				"ReturnAccepted",
+				"ReturnRejected",
+			],
 			default: "Pending",
 		},
 		orderDate: {
@@ -64,16 +80,6 @@ const orderSchema = new Schema(
 		transactionId: {
 			type: String,
 			required: false,
-		},
-		refundDetails: {
-			refundId: { type: String, required: false },
-			refundStatus: {
-				type: String,
-				enum: ["Pending", "Completed", "Failed"],
-				default: "Pending",
-			},
-			refundAmount: { type: Number, required: false },
-			refundDate: { type: Date, required: false },
 		},
 	},
 	{ timestamps: true }

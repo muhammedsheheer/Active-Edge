@@ -1,6 +1,7 @@
 import Products from "../model/productSchema.js";
 import Order from "../model/orderSchema.js";
 import Wallet from "../model/walletSchema.js";
+import Return from "../model/returnSchema.js";
 import Razorpay from "razorpay";
 
 const getOrderData = async (req, res) => {
@@ -21,94 +22,6 @@ const getOrderData = async (req, res) => {
 		return res.status(500).json({ message: error.message });
 	}
 };
-
-// const createOrder = async (req, res) => {
-// 	const {
-// 		userId,
-// 		items,
-// 		shippingAddress,
-// 		paymentMethod,
-// 		theTotelAmount,
-// 		discount,
-// 	} = req.body;
-
-// 	try {
-// 		for (let item of items) {
-// 			const product = await Products.findById(item.productId);
-
-// 			if (!product) {
-// 				return res
-// 					.status(404)
-// 					.json({ message: `Product not found: ${item.productId}` });
-// 			}
-
-// 			const sizeIndex = product.sizes.findIndex(
-// 				(size) => size.size === item.size
-// 			);
-
-// 			if (sizeIndex === -1) {
-// 				return res.status(400).json({
-// 					message: `Size ${item.size} not available for product ${product.name}`,
-// 				});
-// 			}
-
-// 			if (product.sizes[sizeIndex].stock < item.quantity) {
-// 				return res.status(400).json({
-// 					message: `Insufficient stock for product ${product.productName} in size ${item.size}. Available stock: ${product.sizes[sizeIndex].stock}`,
-// 				});
-// 			}
-// 		}
-// 		const razorpay = new Razorpay({
-// 			key_id: process.env.RAZORPAY_KEY_ID,
-// 			key_secret: process.env.RAZORPAY_KEY_SECRET,
-// 		});
-
-// 		const options = {
-// 			amount: theTotelAmount * 100,
-// 			currency: "INR",
-// 			receipt: `receipt_order_${Date.now()}`,
-// 		};
-
-// 		const razorpayOrder = await razorpay.orders.create(options);
-
-// 		const newOrder = new Order({
-// 			userId,
-// 			items,
-// 			theTotelAmount,
-// 			shippingAddress,
-// 			paymentMethod,
-// 			discount,
-// 			razorpayOrderId: razorpayOrder.id,
-// 		});
-
-// 		const savedOrder = await newOrder.save();
-
-// 		for (let item of items) {
-// 			const product = await Products.findById(item.productId);
-
-// 			const sizeIndex = product.sizes.findIndex(
-// 				(size) => size.size === item.size
-// 			);
-
-// 			if (sizeIndex !== -1) {
-// 				product.sizes[sizeIndex].stock -= item.quantity;
-// 				await product.save();
-// 			}
-// 		}
-
-// 		return res.status(201).json({
-// 			message: "Order created successfully",
-// 			order: savedOrder,
-// 			razorpayOrderId: razorpayOrder.id,
-// 			amount: razorpayOrder.amount,
-// 			currency: razorpayOrder.currency,
-// 			key: process.env.RAZORPAY_KEY_ID,
-// 		});
-// 	} catch (error) {
-// 		console.log("Error confirming order:", error);
-// 		res.status(500).json({ message: "Failed to create order" });
-// 	}
-// };
 
 const createOrder = async (req, res) => {
 	const {
@@ -313,65 +226,6 @@ const updateProductStatus = async (req, res) => {
 	}
 };
 
-// const cancelOrder = async (req, res) => {
-// 	try {
-// 		const { orderId, itemId } = req.body;
-
-// 		const order = await Order.findOneAndUpdate(
-// 			{ "items._id": itemId },
-// 			{ $set: { "items.$.status": "Cancelled" } },
-// 			{ new: true }
-// 		);
-
-// 		if (order) {
-// 			const orderItem = order.items.find(
-// 				(item) => item._id.toString() === itemId
-// 			);
-// 			const { productId, quantity, size } = orderItem;
-
-// 			const product = await Products.findById(productId);
-
-// 			if (product) {
-// 				const sizeIndex = product.sizes.findIndex((s) => s.size === size);
-
-// 				if (sizeIndex !== -1) {
-// 					product.sizes[sizeIndex].stock += quantity;
-// 					await product.save();
-// 				}
-// 			}
-
-// 			const statuses = order.items
-// 				.filter((item) => item.status !== "Cancelled")
-// 				.map((item) => item.status);
-
-// 			const statusCount = statuses.reduce((count, status) => {
-// 				count[status] = (count[status] || 0) + 1;
-// 				return count;
-// 			}, {});
-
-// 			const highestStatus = Object.entries(statusCount).reduce(
-// 				(max, [status, count]) => (count > max.count ? { status, count } : max),
-// 				{ status: null, count: 0 }
-// 			);
-
-// 			if (highestStatus.status) {
-// 				order.orderStatus = highestStatus.status;
-// 			} else if (statuses.length === 0) {
-// 				order.orderStatus = "Cancelled";
-// 			}
-
-// 			await order.save();
-// 			return res
-// 				.status(200)
-// 				.json({ message: "Order item cancelled successfully", order });
-// 		} else {
-// 			return res.status(404).json({ message: "Order item not found" });
-// 		}
-// 	} catch (error) {
-// 		return res.status(500).json({ message: error.message });
-// 	}
-// };
-
 const cancelOrder = async (req, res) => {
 	try {
 		const { orderId, itemId } = req.body;
@@ -388,7 +242,6 @@ const cancelOrder = async (req, res) => {
 			);
 
 			const { productId, quantity, size } = orderItem;
-			console.log("order item quantity", quantity);
 
 			const product = await Products.findById(productId);
 
@@ -404,8 +257,6 @@ const cancelOrder = async (req, res) => {
 			const price = product.salePrice * quantity;
 
 			const wallet = await Wallet.findOne({ user: order.userId });
-
-			console.log("order item", order.paymentMethod);
 
 			if (order.paymentMethod !== "Cash on delivery") {
 				wallet.balance += price;
@@ -455,35 +306,208 @@ const cancelOrder = async (req, res) => {
 	}
 };
 
-// const verifyPayment = async (req, res) => {
+// const returnOrderRequest = async (req, res) => {
 // 	try {
-// 		const {
-// 			orderCreationId,
-// 			razorpayPaymentId,
-// 			razorpayOrderId,
-// 			razorpaySignature,
-// 		} = req.body;
+// 		const { orderId, itemId, reason } = req.body;
+// 		console.log("the body", req.body);
 
-// 		const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
-// 		shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
-// 		const digest = shasum.digest("hex");
+// 		let order = await Order.findById(orderId);
 
-// 		if (digest !== razorpaySignature) {
-// 			return res
-// 				.status(400)
-// 				.json({ success: false, message: "Invalid payment signature" });
-// 		}
+// 		let orderItem = order.items.find((item) => item._id.toString() === itemId);
+
+// 		let { productId, quantity, size } = orderItem;
+
+// 		const returnRequest = new Return({
+// 			orderId,
+// 			userId: req.user.id,
+// 			productId,
+// 			quantity,
+// 			size,
+// 			reason,
+// 			itemId,
+// 		});
+
+// 		await returnRequest.save();
 
 // 		return res
 // 			.status(200)
-// 			.json({ success: true, message: "Payment verified successfully" });
+// 			.json({ message: "Return request created successfully", returnRequest });
 // 	} catch (error) {
-// 		console.error("Payment verification error:", error);
-// 		return res
-// 			.status(500)
-// 			.json({ success: false, message: "Failed to verify payment" });
+// 		console.log("the eerrr", error);
+
+// 		return res.status(500).json({ message: error.message });
 // 	}
 // };
+
+const returnOrderRequest = async (req, res) => {
+	try {
+		const { orderId, itemId, reason } = req.body;
+
+		let order = await Order.findById(orderId);
+
+		let orderItem = order.items.find((item) => item._id.toString() === itemId);
+
+		if (!orderItem) {
+			return res.status(404).json({ message: "Order item not found" });
+		}
+
+		let { productId, quantity, size } = orderItem;
+
+		// Create a new return request
+		const returnRequest = new Return({
+			orderId,
+			userId: req.user.id,
+			productId,
+			quantity,
+			size,
+			reason,
+			itemId,
+		});
+
+		await returnRequest.save();
+
+		orderItem.status = "ReturnInitialized";
+		const allItemsReturned = order.items.every(
+			(item) => item.status === "ReturnInitialized"
+		);
+		order.orderStatus = "ReturnInitialized";
+		if (allItemsReturned) {
+			order.status = "ReturnInitialized";
+		}
+
+		await order.save();
+
+		return res
+			.status(200)
+			.json({ message: "Return request created successfully", returnRequest });
+	} catch (error) {
+		console.log("Error:", error);
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const getReturnDetails = async (req, res) => {
+	try {
+		const returnRequest = await Return.find()
+			.populate("orderId")
+			.populate("productId");
+		res.status(200).json({
+			message: "Return request details retrieved successfully",
+			returnRequest,
+		});
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const acceptReturn = async (req, res) => {
+	try {
+		const { returnId } = req.body;
+		console.log("the id", req.body);
+
+		const returnRequest = await Return.findById(returnId)
+			.populate("productId")
+			.populate("orderId");
+		if (!returnRequest) {
+			return res.status(404).json({ message: "Return request not found" });
+		}
+		returnRequest.status = "Accepted";
+
+		await returnRequest.save();
+		const productId = returnRequest.productId;
+		const quantity = returnRequest.quantity;
+		const size = returnRequest.size;
+		const user = returnRequest.userId;
+		const itemId = returnRequest.itemId;
+		const orderId = returnRequest.orderId;
+		const product = await Products.findById(productId);
+
+		let order = await Order.findById(orderId);
+
+		let orderItem = order.items.find((item) => item._id.toString() === itemId);
+
+		if (returnRequest.reason !== "Damaged product") {
+			const sizeIndex = product.sizes.findIndex((s) => s.size === size);
+
+			if (sizeIndex !== -1) {
+				product.sizes[sizeIndex].stock += quantity;
+				await product.save();
+			}
+		}
+
+		const price = product.salePrice * quantity;
+
+		const wallet = await Wallet.findOne({ user });
+
+		wallet.balance += price;
+
+		wallet.transactions.push({
+			type: "credit",
+			amount: price,
+			description: `Refund for cancelled item ${itemId}`,
+			date: Date.now(),
+		});
+
+		await wallet.save();
+
+		orderItem.status = "ReturnAccepted";
+		const allItemsReturned = order.items.every(
+			(item) => item.status === "ReturnAccepted"
+		);
+		order.orderStatus = "ReturnAccepted";
+		if (allItemsReturned) {
+			order.status = "ReturnAccepted";
+		}
+
+		await order.save();
+
+		return res.status(200).json({ message: "Return accepted", returnRequest });
+	} catch (error) {
+		console.log("medsssddd", error);
+
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const rejectReturn = async (req, res) => {
+	try {
+		const { returnId } = req.body;
+		const returnRequest = await Return.findById(returnId)
+			.populate("productId")
+			.populate("orderId");
+
+		if (!returnRequest) {
+			return res.status(404).json({ message: "Return request not found" });
+		}
+
+		returnRequest.status = "Rejected";
+		await returnRequest.save();
+
+		const orderId = returnRequest.orderId;
+		const itemId = returnRequest.itemId;
+
+		let order = await Order.findById(orderId);
+		let orderItem = order.items.find((item) => item._id.toString() === itemId);
+
+		orderItem.status = "ReturnRejected";
+		const allItemsReturned = order.items.every(
+			(item) => item.status === "ReturnRejected"
+		);
+		order.orderStatus = "ReturnRejected";
+		if (allItemsReturned) {
+			order.status = "ReturnRejected";
+		}
+
+		await order.save();
+
+		return res
+			.status(200)
+			.json({ message: "Return request rejected", returnRequest });
+	} catch (error) {
+		console.log("Error:", error);
+		return res.status(500).json({ message: error.message });
+	}
+};
 
 export {
 	createOrder,
@@ -492,5 +516,8 @@ export {
 	getOrderDetailsById,
 	updateProductStatus,
 	cancelOrder,
-	// verifyPayment,
+	returnOrderRequest,
+	getReturnDetails,
+	acceptReturn,
+	rejectReturn,
 };
