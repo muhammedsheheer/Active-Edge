@@ -4,6 +4,7 @@ import ReusableTable from "../../../components/admin/ReusableTableData";
 import ConfirmationReturnModal from "../../../components/user/ConfirmationRetunmodal";
 import Pagination from "../../../components/common/Pagination";
 import BreadCrumbWithButton from "../../../components/admin/BreadCrumbWithButton";
+import { useLocation } from "react-router-dom";
 
 const Return = () => {
 	const [getReturnData, setGetReturnData] = useState([]);
@@ -13,6 +14,8 @@ const Return = () => {
 	const [selectedId, setSelectedId] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const returnPerPage = 7;
+
+	const location = useLocation();
 
 	const fetchReturns = async () => {
 		try {
@@ -95,7 +98,6 @@ const Return = () => {
 		serialNo: indexOfFirstReturn + index + 1,
 		productName: returnItem?.productId?.productName,
 		reason: returnItem?.reason,
-		status: returnItem?.status,
 		status: (
 			<div
 				className={`text-center rounded-md py-1 px-2 font-semibold ${
@@ -141,8 +143,12 @@ const Return = () => {
 	}));
 	return (
 		<>
+			<BreadCrumbWithButton
+				componentLocation={"Return Orders"}
+				noButton={false}
+				location={location.pathname}
+			/>{" "}
 			<ReusableTable columns={columns} data={returnData} />
-			<BreadCrumbWithButton />
 			<ConfirmationReturnModal
 				open={acceptModal}
 				onClose={handleCloseAcceptModal}
@@ -155,7 +161,6 @@ const Return = () => {
 				onConfirm={handleReject}
 				message={"Are you sure you want to reject this return?"}
 			/>
-
 			<Pagination
 				currentPage={currentPage}
 				totalPages={Math.ceil(getReturnData.length / returnPerPage)}

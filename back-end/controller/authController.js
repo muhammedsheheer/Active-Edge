@@ -201,4 +201,140 @@ const logout = async (req, res) => {
 	}
 };
 
-export { registerUser, verifiOtp, resendOtp, userLogin, logout, googleLogin };
+const forgotPassword = async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		const user = await User.findOne({ email });
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		const otp = otpGenerator.generate(6, {
+			digits: true,
+			alphabets: false,
+			upperCaseAlphabets: false,
+			lowerCaseAlphabets: false,
+			specialChars: false,
+		});
+
+		const otpData = new Otp({ email, otp });
+		await otpData.save();
+		await sendOTPByEmail(email, otp);
+
+		res.status(200).json({ message: "OTP sent to email" });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+const verifyOtpAndResetPassword = async (req, res) => {
+	const { email, otp, newPassword, confirmPassword } = req.body;
+
+	try {
+		if (newPassword !== confirmPassword) {
+			return res.status(400).json({ message: "Passwords do not match" });
+		}
+
+		const otpData = await Otp.findOne({ email, otp });
+		if (!otpData) {
+			return res.status(400).json({ message: "Invalid OTP or OTP expired" });
+		}
+
+		const hashPassword = await bcrypt.hash(newPassword, 10);
+		await User.updateOne(
+			{ email: otpData.email },
+			{ $set: { password: hashPassword } }
+		);
+
+		await Otp.deleteOne({ otp });
+		res.status(200).json({ message: "Password reset successful" });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+// const verifyOtpPassword = async (req, res) => {
+// 	const { email, otp } = req.body;
+
+// 	try {
+// 		// Check if the OTP is valid
+// 		const otpData = await Otp.findOne({ email, otp });
+// 		if (!otpData) {
+// 			return res.status(400).json({ message: "Invalid OTP or OTP expired" });
+// 		}
+
+// 		res.status(200).json({ message: "OTP verified successfully" });
+// 	} catch (error) {
+// 		res.status(500).json({ message: error.message });
+// 	}
+// };
+
+// const resetPassword = async (req, res) => {
+// 	const { email, newPassword, confirmPassword } = req.body;
+
+// 	try {
+// 		if (newPassword !== confirmPassword) {
+// 			return res.status(400).json({ message: "Passwords do not match" });
+// 		}
+
+// 		const otpData = await Otp.findOne({ email });
+// 		if (!otpData) {
+// 			return res.status(400).json({ message: "Invalid or expired OTP" });
+// 		}
+
+// 		const hashPassword = await bcrypt.hash(newPassword, 10);
+
+// 		await User.updateOne(
+// 			{ email: otpData.email },
+// 			{ $set: { password: hashPassword } }
+// 		);
+
+// 		await Otp.deleteOne({ email });
+
+// 		res.status(200).json({ message: "Password reset successful" });
+// 	} catch (error) {
+// 		res.status(500).json({ message: error.message });
+// 	}
+// };
+
+const resendOtpForgotPassword = async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		const user = await User.findOne({ email, isVerified: true });
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		await Otp.deleteMany({ email });
+
+		const otp = otpGenerator.generate(6, {
+			digits: true,
+			alphabets: false,
+			upperCaseAlphabets: false,
+			lowerCaseAlphabets: false,
+			specialChars: false,
+		});
+
+		const otpData = new Otp({ email, otp });
+		await otpData.save();
+		await sendOTPByEmail(email, otp);
+
+		res.status(200).json({ message: "New OTP sent to email" });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+export {
+	registerUser,
+	verifiOtp,
+	resendOtp,
+	userLogin,
+	logout,
+	googleLogin,
+	forgotPassword,
+	verifyOtpAndResetPassword,
+	resendOtpForgotPassword,
+};

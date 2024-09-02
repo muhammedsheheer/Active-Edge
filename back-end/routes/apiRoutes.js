@@ -8,7 +8,7 @@ import cartRoutes from "./cartRoutes.js";
 import orderRoutes from "./orderRoutes.js";
 import coupenRoutes from "./coupenRoutes.js";
 import walletRoutes from "./walletRoutes.js";
-
+import salesReportRoutes from "./salesReportRoute.js";
 const app = express.Router();
 
 app.use("/users", userRoute);
@@ -20,5 +20,6 @@ app.use("/cart", cartRoutes);
 app.use("/order", orderRoutes);
 app.use("/coupen", coupenRoutes);
 app.use("/wallet", walletRoutes);
+app.use("/report", salesReportRoutes);
 
 export default app;

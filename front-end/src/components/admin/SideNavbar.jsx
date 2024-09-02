@@ -47,7 +47,7 @@ const SideNavbar = () => {
 						</li>
 						<li className="text-gray-600 font-semibold hover:text-black">
 							{" "}
-							<Link to={"#"}>Sales Report</Link>
+							<Link to={"salesReport"}>Sales Report</Link>
 						</li>
 					</ul>
 					<button

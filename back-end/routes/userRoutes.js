@@ -6,6 +6,9 @@ import {
 	userLogin,
 	logout,
 	googleLogin,
+	forgotPassword,
+	verifyOtpAndResetPassword,
+	resendOtpForgotPassword,
 } from "../controller/authController.js";
 import { isAuth, isAuthAdmin } from "../midlware/isAuth.js";
 import {
@@ -28,6 +31,9 @@ router.post("/resend-otp", resendOtp);
 router.post("/login", userLogin);
 router.post("/google-login", googleLogin);
 router.post("/logout", logout);
+router.post("/forgot-password", forgotPassword);
+router.post("/verify-otp-reset-password", verifyOtpAndResetPassword);
+router.post("/resend-otp-password", resendOtpForgotPassword);
 
 //user routes
 

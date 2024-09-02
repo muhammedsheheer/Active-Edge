@@ -34,6 +34,9 @@ import OrderDetailses from "./pages/user/OrderDetilses.jsx";
 import Coupen from "./pages/admin/coupen/Coupen.jsx";
 import WalletPage from "./pages/user/WalletPage.jsx";
 import Return from "./pages/admin/return/Return.jsx";
+import ForgotPassword from "./pages/user/ForgotPassword.jsx";
+import ResetPassword from "./pages/user/ResetPassword.jsx";
+import SalesReport from "./pages/admin/salesReport/SalesReport.jsx";
 
 function App() {
 	return (
@@ -70,6 +73,8 @@ function App() {
 					<Route path="/login" element={<UserLogin />} />
 					<Route path="/register" element={<UserRegister />} />
 					<Route path="/otp" element={<OTPVerification />} />
+					<Route path="/forgot-password" element={<ForgotPassword />} />
+					<Route path="/reset-password" element={<ResetPassword />} />
 				</Route>
 				{/* {admin routes} */}
 				<Route element={<ProtectedAdminRoute />}>
@@ -83,6 +88,7 @@ function App() {
 						<Route path="orders" element={<Order />} />
 						<Route path="coupens" element={<Coupen />} />
 						<Route path="returnes" element={<Return />} />
+						<Route path="salesReport" element={<SalesReport />} />
 					</Route>
 				</Route>
 			</Routes>
