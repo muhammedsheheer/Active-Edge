@@ -28,6 +28,10 @@ const SideNavbar = () => {
 							{" "}
 							<Link to={"categorys"}>Categories</Link>
 						</li>
+						<li className="text-gray-600 font-semibold hover:text-black">
+							{" "}
+							<Link to={"offers"}>Offers</Link>
+						</li>
 
 						<li className="text-gray-600 font-semibold hover:text-black">
 							{" "}

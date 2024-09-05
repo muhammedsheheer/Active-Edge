@@ -15,6 +15,10 @@ const categorySchema = mongoose.Schema(
 			required: true,
 			default: true,
 		},
+		offer: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Offer",
+		},
 	},
 	{
 		timestamps: true,

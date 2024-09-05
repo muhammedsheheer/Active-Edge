@@ -291,7 +291,7 @@ const ProfileSideBar = () => {
 	};
 
 	return (
-		<div className="w-full lg:w-72 bg-white shadow-md rounded-lg overflow-hidden p-4 lg:p-6">
+		<div className="w-full  lg:w-72 bg-white shadow-md rounded-lg overflow-hidden p-4 lg:p-6">
 			<div className="flex flex-col items-center lg:items-center text-center lg:text-left">
 				<h2 className="text-xl sm:text-xl font-semibold text-black ">
 					Account Info

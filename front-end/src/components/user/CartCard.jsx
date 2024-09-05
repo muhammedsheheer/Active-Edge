@@ -20,6 +20,7 @@ const CartCard = () => {
 	const [coupons, setCoupons] = useState([]);
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [discount, setDiscount] = useState(0);
+	const [discountedAmount, setDiscountedAmount] = useState(0);
 	const [appliedCoupon, setAppliedCoupon] = useState(null);
 	const MAX_QUANTITY = 5;
 
@@ -49,12 +50,25 @@ const CartCard = () => {
 
 	const calculateTotalAmount = (items) => {
 		if (items) {
+			let totalDiscountedAmount = 0;
+
 			const total = items.reduce((total, cartItem) => {
-				const itemPrice = Number(cartItem?.productId?.salePrice);
-				const itemTotal = itemPrice * cartItem?.quantity;
+				const itemPrice = cartItem.originalPrice * cartItem.quantity;
+				let discountAmount = 0;
+
+				if (cartItem?.discountedPrice) {
+					discountAmount =
+						(cartItem.originalPrice - cartItem.discountedPrice) *
+						cartItem.quantity;
+					totalDiscountedAmount += discountAmount;
+				}
+
+				const itemTotal = itemPrice;
 				return total + itemTotal;
 			}, 0);
+
 			setTotalAmount(total);
+			setDiscountedAmount(totalDiscountedAmount);
 		}
 	};
 
@@ -146,6 +160,7 @@ const CartCard = () => {
 				totalAmount,
 				discount,
 				appliedCoupon,
+				discountedAmount,
 			},
 		});
 	};
@@ -193,8 +208,11 @@ const CartCard = () => {
 											{cartItem?.productId?.productName}
 										</h2>
 										<p className="text-gray-500">
-											₹{cartItem?.productId?.salePrice.toFixed(2)}
+											{cartItem?.discountedPrice
+												? `₹${cartItem?.discountedPrice.toFixed(2)}`
+												: `₹${cartItem?.productId?.salePrice.toFixed(2)}`}
 										</p>
+
 										<div className="flex items-center gap-4 mt-2">
 											<div className="flex items-center gap-2">
 												<label className="text-sm font-medium">Size:</label>
@@ -205,11 +223,13 @@ const CartCard = () => {
 														handleSizeChange(cartItem, e.target.value)
 													}
 												>
-													{cartItem?.productId?.sizes?.map((size) => (
-														<option key={size._id} value={size.size}>
-															{size.size}
-														</option>
-													))}
+													{cartItem?.productId?.sizes
+														?.filter((s) => s?.stock !== 0)
+														.map((size) => (
+															<option key={size._id} value={size.size}>
+																{size.size}
+															</option>
+														))}
 												</select>
 											</div>
 
@@ -274,27 +294,41 @@ const CartCard = () => {
 
 						<h2 className="text-xl font-semibold mb-6">Price Details</h2>
 						<div className="flex justify-between mb-4">
-							<span className="font-medium text-gray-700">Subtotal:</span>
-							<span className="font-semibold">₹{totalAmount.toFixed(2)}</span>
+							<span className="font-medium text-gray-700">Subtotal :</span>
+							<span className="font-semibold">₹{totalAmount}</span>
 						</div>
 						{appliedCoupon && (
 							<div className="flex justify-between mb-4">
 								<span className="font-medium text-gray-700">
-									Discount ({appliedCoupon.code}):
+									Coupen Discount :
 								</span>
 								<span className="font-semibold text-green-600">
-									-₹{discount.toFixed(2)}
+									-₹{discount}
 								</span>
 							</div>
 						)}
 						<div className="flex justify-between mb-4">
-							<span className="font-medium text-gray-700">Shipping:</span>
-							<span className="font-semibold">₹30.00</span>
+							<span className="font-medium text-gray-700">
+								Discount on MRP :
+							</span>
+							<span
+								className={
+									discountedAmount > 0
+										? "font-semibold text-green-600"
+										: "font-semibold text-black"
+								}
+							>
+								-₹{discountedAmount}
+							</span>
+						</div>
+						<div className="flex justify-between mb-4">
+							<span className="font-medium text-gray-700">Shipping :</span>
+							<span className="font-semibold">₹30</span>
 						</div>
 						<div className="flex justify-between mb-4">
 							<span className="font-medium text-gray-700">Total:</span>
 							<span className="font-semibold">
-								₹{(totalAmount + 30 - discount).toFixed(2)}
+								₹{totalAmount + 30 - discount - discountedAmount}
 							</span>
 						</div>
 						<button

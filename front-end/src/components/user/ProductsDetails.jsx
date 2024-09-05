@@ -17,6 +17,7 @@ const ProductsDetails = () => {
 	const { user } = useSelector((state) => state.auth);
 	const userId = user;
 	const [product, setProduct] = useState(null);
+	const [datas, setDatas] = useState(null);
 	const [mainImage, setMainImage] = useState("");
 	const [loading, setLoading] = useState(true);
 	const [selectSize, setSelectSize] = useState(null);
@@ -99,7 +100,10 @@ const ProductsDetails = () => {
 	const fetchProductDetails = async () => {
 		try {
 			const response = await api.get(`/product/productDetails/${id}`);
+			console.log("the response ", response);
+
 			if (response?.data?.productsDetails) {
+				setDatas(response.data);
 				setProduct(response.data.productsDetails);
 				setMainImage(response.data.productsDetails?.gallery[0]);
 				setLoading(false);
@@ -156,10 +160,17 @@ const ProductsDetails = () => {
 					<h1 className="text-xl font-bold">{product?.productName}</h1>
 					<p className="text-gray-500">5k Reviews</p>
 					<div className="flex justify-center items-center space-x-2 mt-2">
-						<span className="text-lg font-bold">₹{product?.salePrice}</span>
-						<span className="line-through text-gray-500">
-							₹{product?.regularPrice}
+						<span className="text-lg font-bold">
+							₹
+							{datas?.discountedPrice
+								? datas?.discountedPrice
+								: product?.salePrice}
 						</span>
+						{datas?.discountedPrice && (
+							<span className="line-through text-gray-500">
+								₹{product?.salePrice}
+							</span>
+						)}
 					</div>
 					<p className="mt-4 text-sm">{product?.description}</p>
 

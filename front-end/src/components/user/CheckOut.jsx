@@ -32,7 +32,7 @@ const CheckOut = () => {
 	}, [addresses]);
 
 	const location = useLocation();
-	const { totalAmount = 0, discount = 0 } = location.state || {};
+	const { totalAmount, discount, discountedAmount } = location.state || {};
 
 	const handleEdit = (address) => {
 		setSelectedAddress(address);
@@ -70,6 +70,7 @@ const CheckOut = () => {
 			state: {
 				totalAmount,
 				discount,
+				discountedAmount,
 				selectedAddress,
 			},
 		});
@@ -150,20 +151,40 @@ const CheckOut = () => {
 			<div className="flex-[1] md:w-1/4 p-4 border rounded-lg bg-white shadow-sm max-h-[400px] overflow-auto">
 				<h2 className="text-xl font-semibold mb-6">Price Details</h2>
 				<div className="flex justify-between mb-4">
-					<span className="font-medium text-gray-700">Subtotal:</span>
-					<span className="font-semibold">₹{totalAmount.toFixed(2)}</span>
+					<span className="font-medium text-gray-700">Subtotal :</span>
+					<span className="font-semibold">₹{totalAmount}</span>
 				</div>
 				<div className="flex justify-between mb-4">
-					<span className="font-medium text-gray-700">Discount:</span>
-					<span className="font-semibold">-₹{discount.toFixed(2)}</span>
+					<span className="font-medium text-gray-700">Coupen Discount :</span>
+					<span
+						className={
+							discount > 0
+								? "font-semibold text-green-500"
+								: "font-semibold text-black"
+						}
+					>
+						-₹{discount}
+					</span>
 				</div>
 				<div className="flex justify-between mb-4">
-					<span className="font-medium text-gray-700">Shipping:</span>
-					<span className="font-semibold">₹30.00</span>
+					<span className="font-medium text-gray-700">Discount On MRP :</span>
+					<span
+						className={
+							discountedAmount > 0
+								? "font-semibold text-green-500"
+								: "font-semibold text-black"
+						}
+					>
+						-₹{discountedAmount}
+					</span>
+				</div>
+				<div className="flex justify-between mb-4">
+					<span className="font-medium text-gray-700">Shipping :</span>
+					<span className="font-semibold">₹30</span>
 				</div>
 				<div className="flex justify-between font-bold text-lg mb-4">
-					<span>Total:</span>
-					<span>₹{(totalAmount + 30 - discount).toFixed(2)}</span>
+					<span>Total :</span>
+					<span>₹{totalAmount + 30 - discount - discountedAmount}</span>
 				</div>
 				<button
 					onClick={handleProceedToCheckout}

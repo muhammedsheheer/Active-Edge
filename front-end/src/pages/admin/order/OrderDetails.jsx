@@ -207,9 +207,19 @@ const OrderDetails = () => {
 							<p className="text-gray-700 mt-1 text-sm">₹30</p>
 						</div>
 						<div>
-							<h2 className="text-gray-500 font-semibold text-sm">DISCOUNT</h2>
+							<h2 className="text-gray-500 font-semibold text-sm">
+								COUPEN DISCOUNT
+							</h2>
 							<p className="text-red-500 mt-1 text-sm">
 								₹ {orderData.discount}
+							</p>
+						</div>
+						<div>
+							<h2 className="text-gray-500 font-semibold text-sm">
+								DISCOUNT ON MRP
+							</h2>
+							<p className="text-red-500 mt-1 text-sm">
+								₹ {orderData.discountedAmount}
 							</p>
 						</div>
 						<div className="col-span-4 text-right">

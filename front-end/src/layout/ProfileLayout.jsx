@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 const ProfileLayout = () => {
 	return (
-		<div className="flex">
+		<div className="  flex">
 			<ProfileSideBar />
 			<div className="flex flex-col flex-grow ml-20">
 				<main className="flex-grow  bg-white min-h-screen">

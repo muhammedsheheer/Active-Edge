@@ -56,7 +56,7 @@ const OrderData = () => {
 		name: order?.shippingAddress?.name,
 		phone: order?.shippingAddress?.phone,
 		shipping: `${order?.shippingAddress?.address}, ${order?.shippingAddress?.city}, ${order?.shippingAddress?.pinCode}`,
-		total: `$${order?.theTotelAmount}`,
+		total: `₹${order?.theTotelAmount}`,
 		status: (
 			<div
 				className={`text-center rounded-md py-1 px-2 font-semibold ${

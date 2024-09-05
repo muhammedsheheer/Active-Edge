@@ -54,7 +54,8 @@ const SalesReport = () => {
 					<tr>
 						<th className="px-4 py-2">Order ID</th>
 						<th className="px-4 py-2">Order Amount</th>
-						<th className="px-4 py-2">Discount</th>
+						<th className="px-4 py-2">Coupen Discount</th>
+						<th className="px-4 py-2">Discount On MRP</th>
 						<th className="px-4 py-2">Date</th>
 					</tr>
 				</thead>
@@ -64,6 +65,9 @@ const SalesReport = () => {
 							<td className="border px-4 py-2">{order._id}</td>
 							<td className="border px-4 py-2">{order.theTotelAmount}</td>
 							<td className="border px-4 py-2">{order.discount}</td>
+							<td className="border px-4 py-2">
+								{order.discountedAmount ? order.discountedAmount : 0}
+							</td>
 							<td className="border px-4 py-2">
 								{new Date(order.createdAt).toLocaleDateString()}
 							</td>

@@ -28,8 +28,9 @@ const PaymentOptions = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { totalAmount, discount, selectedAddress } = location.state || {};
-	const theTotelAmount = totalAmount + 30 - discount;
+	const { totalAmount, discount, discountedAmount, selectedAddress } =
+		location.state || {};
+	const theTotelAmount = totalAmount + 30 - discount - discountedAmount;
 
 	const [userDetails, setUserDetails] = useState({});
 
@@ -77,6 +78,7 @@ const PaymentOptions = () => {
 				paymentMethod,
 				theTotelAmount,
 				discount,
+				discountedAmount,
 			};
 
 			const orderResponse = await createOrder(orderData);
@@ -105,6 +107,7 @@ const PaymentOptions = () => {
 			paymentMethod,
 			theTotelAmount,
 			discount,
+			discountedAmount,
 		};
 
 		const orderResponse = await createOrder(orderData);
@@ -149,6 +152,7 @@ const PaymentOptions = () => {
 				paymentMethod,
 				theTotelAmount,
 				discount,
+				discountedAmount,
 			};
 
 			const orderResponse = await createOrder(orderData);
@@ -416,22 +420,44 @@ const PaymentOptions = () => {
 				<div className="lg:w-1/4 p-4 border rounded-lg bg-white shadow-sm max-h-[400px] overflow-auto">
 					<h2 className="text-xl font-semibold mb-6">Price Details</h2>
 					<div className="flex justify-between mb-4">
-						<span className="font-medium text-gray-700">Subtotal:</span>
-						<span className="font-semibold">₹{totalAmount.toFixed(2)}</span>
+						<span className="font-medium text-gray-700">Subtotal :</span>
+						<span className="font-semibold">₹{totalAmount}</span>
 					</div>
 					<div className="flex justify-between mb-4">
-						<span className="font-medium text-gray-700">Discount:</span>
-						<span className="font-semibold"> ₹{discount.toFixed(2)}</span>
+						<span className="font-medium text-gray-700">Coupen Discount :</span>
+						<span
+							className={
+								discount > 0
+									? "font-semibold text-green-500"
+									: "font-semibold text-black"
+							}
+						>
+							{" "}
+							-₹{discount}
+						</span>
 					</div>
 					<div className="flex justify-between mb-4">
-						<span className="font-medium text-gray-700">Shipping:</span>
-						<span className="font-semibold">₹{(30.0).toFixed(2)}</span>
+						<span className="font-medium text-gray-700">Discount On MRP :</span>
+						<span
+							className={
+								discountedAmount > 0
+									? "font-semibold text-green-500"
+									: "font-semibold text-black"
+							}
+						>
+							{" "}
+							-₹{discountedAmount}
+						</span>
+					</div>
+					<div className="flex justify-between mb-4">
+						<span className="font-medium text-gray-700">Shipping :</span>
+						<span className="font-semibold">₹{30}</span>
 					</div>
 					<hr className="my-4" />
 					<div className="flex justify-between mb-4">
-						<span className="font-semibold text-lg text-gray-800">Total:</span>
+						<span className="font-semibold text-lg text-gray-800">Total :</span>
 						<span className="font-semibold text-lg text-pink-600">
-							₹{theTotelAmount.toFixed(2)}
+							₹{theTotelAmount}
 						</span>
 					</div>
 				</div>

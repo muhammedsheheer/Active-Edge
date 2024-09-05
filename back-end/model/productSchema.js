@@ -33,6 +33,10 @@ const productSchema = mongoose.Schema(
 		salePrice: {
 			type: Number,
 		},
+		offer: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Offer",
+		},
 		sizes: [
 			{
 				size: String,

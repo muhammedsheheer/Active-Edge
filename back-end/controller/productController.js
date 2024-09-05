@@ -1,5 +1,6 @@
 import Products from "../model/productSchema.js";
 import { uploadImage, uploadMultipleImages } from "../utils/imageUplode.js";
+import { calculateOfferPrice } from "../utils/calculateOfferPrice.js";
 
 const createProduct = async (req, res) => {
 	try {
@@ -84,11 +85,34 @@ const getProducts = async (req, res) => {
 		const products = await Products.find({})
 			.populate("category")
 			.populate("brand")
+			.populate("offer")
+			.populate({
+				path: "category",
+				populate: { path: "offer" },
+			})
 			.sort({ createdAt: -1 })
 			.limit(12);
+
+		const results = products.map((product) => {
+			const productOffer = product.offer?.discountPercentage || 0;
+			const categoryOffer = product.category?.offer?.discountPercentage || 0;
+			const offerExpirationDate =
+				product.offer?.endDate || product.category?.offer?.endDate;
+			const priceDetails = calculateOfferPrice(
+				product.salePrice,
+				productOffer,
+				categoryOffer,
+				offerExpirationDate
+			);
+			return {
+				...product.toObject(),
+				...priceDetails,
+				offerValid: priceDetails.offerPercentage > 0,
+			};
+		});
 		return res
 			.status(200)
-			.json({ message: "prodduct fetched successfully", products: products });
+			.json({ message: "prodduct fetched successfully", products: results });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -101,34 +125,101 @@ const getProductByGender = async (req, res) => {
 		const products = await Products.find(query)
 			.populate("category")
 			.populate("brand")
+			.populate("offer")
+			.populate({
+				path: "category",
+				populate: { path: "offer" },
+			})
 			.sort({ createdAt: -1 });
 		if (!products) {
 			return res.status(400).json({ message: "No item founded" });
 		}
+
+		const results = products.map((product) => {
+			const productOffer = product.offer?.discountPercentage || 0;
+			const categoryOffer = product.category?.offer?.discountPercentage || 0;
+			const offerExpirationDate =
+				product.offer?.endDate || product.category?.offer?.endDate;
+			const priceDetails = calculateOfferPrice(
+				product.salePrice,
+				productOffer,
+				categoryOffer,
+				offerExpirationDate
+			);
+			return {
+				...product.toObject(),
+				...priceDetails,
+				offerValid: priceDetails.offerPercentage > 0,
+			};
+		});
 		return res
 			.status(200)
-			.json({ message: "Product fetched successfully", products: products });
+			.json({ message: "Product fetched successfully", products: results });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
 };
+
+// const getProductById = async (req, res) => {
+// 	try {
+// const { id } = req.params;
+// const productsDetails = await Products.findById(id)
+// 			.populate("category")
+// 			.populate("brand")
+// 			.populate("offer")
+// 			.populate({
+// 				path: "category",
+// 				populate: { path: "offer" },
+// 			});
+
+// 		if (!productsDetails) {
+// 			return res.status(400).json({ message: "Product Not Found" });
+// 		}
+// 		return res.status(200).json({
+// 			message: "Product fetch successfully",
+// 			productsDetails: productsDetails,
+// 		});
+// 	} catch (error) {
+// 		return res.status(500).json({ message: error.message });
+// 	}
+// };
 
 const getProductById = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const productsDetails = await Products.findById(id)
 			.populate("category")
-			.populate("brand");
-
+			.populate("brand")
+			.populate("offer")
+			.populate({
+				path: "category",
+				populate: { path: "offer" },
+			});
 		if (!productsDetails) {
-			return res.status(400).json({ message: "Product Not Found" });
+			return res.status(400).json({ message: "Product not found" });
 		}
+
+		const productOffer = productsDetails.offer?.discountPercentage || 0;
+		const categoryOffer =
+			productsDetails.category?.offer?.discountPercentage || 0;
+		const offerExpirationDate =
+			productsDetails.offer?.endDate ||
+			productsDetails.category?.offer?.endDate;
+		const priceDetails = calculateOfferPrice(
+			productsDetails.salePrice,
+			productOffer,
+			categoryOffer,
+			offerExpirationDate
+		);
+
 		return res.status(200).json({
 			message: "Product fetch successfully",
-			productsDetails: productsDetails,
+			productsDetails,
+			...priceDetails,
+			offerValid: priceDetails.offerPercentage > 0,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Failed to get the product" });
 	}
 };
 
@@ -223,6 +314,18 @@ const delteProduct = async (req, res) => {
 	}
 };
 
+const searchProduct = async (req, res) => {
+	try {
+		const query = req.query.query || "";
+		const products = await Products.find({
+			productName: { $regex: query, $options: "i" },
+		});
+		res.json({ products });
+	} catch (error) {
+		res.status(500).json({ message: "Error fetching products", error });
+	}
+};
+
 export {
 	getProducts,
 	createProduct,
@@ -231,4 +334,5 @@ export {
 	delteProduct,
 	blockProduct,
 	updateProduct,
+	searchProduct,
 };

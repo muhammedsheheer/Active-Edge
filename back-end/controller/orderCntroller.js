@@ -31,6 +31,7 @@ const createOrder = async (req, res) => {
 		paymentMethod,
 		theTotelAmount,
 		discount,
+		discountedAmount,
 	} = req.body;
 
 	try {
@@ -78,7 +79,7 @@ const createOrder = async (req, res) => {
 			wallet.balance -= finalAmount;
 			wallet.transactions.push({
 				type: "debit",
-				amount: finalAmount,
+				amount: Math.round(finalAmount * 100),
 				description: `Payment for order`,
 				date: Date.now(),
 			});
@@ -96,7 +97,7 @@ const createOrder = async (req, res) => {
 			});
 
 			const options = {
-				amount: finalAmount,
+				amount: finalAmount * 100,
 				currency: "INR",
 				receipt: `receipt_order_${Date.now()}`,
 			};
@@ -111,6 +112,7 @@ const createOrder = async (req, res) => {
 			shippingAddress,
 			paymentMethod,
 			discount,
+			discountedAmount,
 			razorpayOrderId: razorpayOrder ? razorpayOrder.id : null,
 		});
 
@@ -306,39 +308,6 @@ const cancelOrder = async (req, res) => {
 	}
 };
 
-// const returnOrderRequest = async (req, res) => {
-// 	try {
-// 		const { orderId, itemId, reason } = req.body;
-// 		console.log("the body", req.body);
-
-// 		let order = await Order.findById(orderId);
-
-// 		let orderItem = order.items.find((item) => item._id.toString() === itemId);
-
-// 		let { productId, quantity, size } = orderItem;
-
-// 		const returnRequest = new Return({
-// 			orderId,
-// 			userId: req.user.id,
-// 			productId,
-// 			quantity,
-// 			size,
-// 			reason,
-// 			itemId,
-// 		});
-
-// 		await returnRequest.save();
-
-// 		return res
-// 			.status(200)
-// 			.json({ message: "Return request created successfully", returnRequest });
-// 	} catch (error) {
-// 		console.log("the eerrr", error);
-
-// 		return res.status(500).json({ message: error.message });
-// 	}
-// };
-
 const returnOrderRequest = async (req, res) => {
 	try {
 		const { orderId, itemId, reason } = req.body;
@@ -353,7 +322,6 @@ const returnOrderRequest = async (req, res) => {
 
 		let { productId, quantity, size } = orderItem;
 
-		// Create a new return request
 		const returnRequest = new Return({
 			orderId,
 			userId: req.user.id,

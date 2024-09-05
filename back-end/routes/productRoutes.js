@@ -7,6 +7,7 @@ import {
 	getProductByGender,
 	getProductById,
 	getProducts,
+	searchProduct,
 	updateProduct,
 } from "../controller/productController.js";
 
@@ -19,5 +20,6 @@ router.get("/productByGender-query", getProductByGender);
 router.put("/productEdit/:id", isAuth, isAuthAdmin, updateProduct);
 router.put("/productActivate/:id", isAuth, isAuthAdmin, blockProduct);
 router.delete("/productDelete/:id", isAuth, isAuthAdmin, delteProduct);
+router.get("/search", searchProduct);
 
 export default router;

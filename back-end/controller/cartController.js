@@ -1,5 +1,6 @@
 import Cart from "../model/cartSchema.js";
 import Product from "../model/productSchema.js";
+import { calculateOfferPrice } from "../utils/calculateOfferPrice.js";
 
 const addToCart = async (req, res) => {
 	try {
@@ -44,14 +45,52 @@ const getToCart = async (req, res) => {
 
 		const cart = await Cart.findOne({ user: userId }).populate({
 			path: "items.productId",
-			populate: { path: "brand" },
+			populate: [
+				{ path: "brand" },
+				{ path: "offer" },
+				{
+					path: "category",
+					model: "Category",
+					populate: {
+						path: "offer",
+						model: "Offer",
+					},
+				},
+			],
 		});
 
 		if (!cart) {
 			return res.status(404).json({ message: "Cart not found" });
 		}
-		return res.status(200).json({ message: "Cart founded ", cart });
+
+		const results = cart?.items?.map((product) => {
+			const productOffer = product?.productId?.offer?.discountPercentage || 0;
+			const categoryOffer =
+				product?.productId?.category?.offer?.discountPercentage || 0;
+			const offerExpirationDate =
+				product?.productId?.offer?.endDate ||
+				product?.productId?.category?.offer?.endDate;
+			const priceDetails = calculateOfferPrice(
+				product?.productId?.salePrice,
+				productOffer,
+				categoryOffer,
+				offerExpirationDate
+			);
+			return {
+				...product.toObject(),
+				...priceDetails,
+				offerValid: priceDetails.offerPercentage > 0,
+			};
+		});
+		return res.status(200).json({
+			cart: {
+				...cart.toObject(),
+				items: results,
+			},
+		});
 	} catch (error) {
+		console.log(error);
+
 		return res.status(500).json({ message: error.message });
 	}
 };

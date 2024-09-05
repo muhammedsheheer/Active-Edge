@@ -40,6 +40,10 @@ const orderSchema = new Schema(
 			type: Number,
 			required: false,
 		},
+		discountedAmount: {
+			type: Number,
+			required: false,
+		},
 		shippingAddress: {
 			name: { type: String, required: true },
 			phone: { type: String, required: true },

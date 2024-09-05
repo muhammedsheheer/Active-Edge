@@ -37,6 +37,7 @@ import Return from "./pages/admin/return/Return.jsx";
 import ForgotPassword from "./pages/user/ForgotPassword.jsx";
 import ResetPassword from "./pages/user/ResetPassword.jsx";
 import SalesReport from "./pages/admin/salesReport/SalesReport.jsx";
+import Offers from "./pages/admin/offers/Offers.jsx";
 
 function App() {
 	return (
@@ -89,6 +90,7 @@ function App() {
 						<Route path="coupens" element={<Coupen />} />
 						<Route path="returnes" element={<Return />} />
 						<Route path="salesReport" element={<SalesReport />} />
+						<Route path="offers" element={<Offers />} />
 					</Route>
 				</Route>
 			</Routes>
