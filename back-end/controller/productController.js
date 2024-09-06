@@ -160,30 +160,6 @@ const getProductByGender = async (req, res) => {
 	}
 };
 
-// const getProductById = async (req, res) => {
-// 	try {
-// const { id } = req.params;
-// const productsDetails = await Products.findById(id)
-// 			.populate("category")
-// 			.populate("brand")
-// 			.populate("offer")
-// 			.populate({
-// 				path: "category",
-// 				populate: { path: "offer" },
-// 			});
-
-// 		if (!productsDetails) {
-// 			return res.status(400).json({ message: "Product Not Found" });
-// 		}
-// 		return res.status(200).json({
-// 			message: "Product fetch successfully",
-// 			productsDetails: productsDetails,
-// 		});
-// 	} catch (error) {
-// 		return res.status(500).json({ message: error.message });
-// 	}
-// };
-
 const getProductById = async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -314,18 +290,6 @@ const delteProduct = async (req, res) => {
 	}
 };
 
-const searchProduct = async (req, res) => {
-	try {
-		const query = req.query.query || "";
-		const products = await Products.find({
-			productName: { $regex: query, $options: "i" },
-		});
-		res.json({ products });
-	} catch (error) {
-		res.status(500).json({ message: "Error fetching products", error });
-	}
-};
-
 export {
 	getProducts,
 	createProduct,
@@ -334,5 +298,4 @@ export {
 	delteProduct,
 	blockProduct,
 	updateProduct,
-	searchProduct,
 };

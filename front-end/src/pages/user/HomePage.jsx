@@ -23,11 +23,7 @@ const HomePage = () => {
 	return (
 		<div className="container mx-auto px-2 sm:px-4">
 			<div className="mb-14 md:mb-20">
-				<SportsFitBanner
-					image={
-						"https://images.hdqwalls.com/download/neymar-jr-brazil-portraits-f1-3840x2400.jpg"
-					}
-				/>
+				<SportsFitBanner image={"/Home.png"} />
 			</div>
 			<h1 className="text-center mb-8 font-extrabold text-4xl text-gray-900 leading-snug tracking-wider">
 				<span className="font-light">Discover</span>
@@ -44,11 +40,7 @@ const HomePage = () => {
 			<ShopNowCard />
 
 			<div className="mt-40">
-				<img
-					className="w-auto h-auto"
-					src="../../../public/free 1.png"
-					alt=""
-				/>
+				<img className="w-auto h-auto" src="/free 1.png" alt="" />
 			</div>
 		</div>
 	);

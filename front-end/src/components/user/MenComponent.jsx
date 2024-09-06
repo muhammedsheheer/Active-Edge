@@ -96,7 +96,7 @@ const MenProductGrid = ({ data }) => {
 	return (
 		<>
 			<div className="mb-16">
-				<SportsFitBanner image="https://i.eurosport.com/2016/06/25/1883363-39663138-2560-1440.jpg" />
+				<SportsFitBanner image="/Men.png" />
 			</div>
 			<div className="flex flex-col md:flex-row">
 				{/* Filter Section */}
@@ -180,21 +180,42 @@ const MenProductGrid = ({ data }) => {
 											{product.productName}
 										</span>
 									</div>
-									<div className="flex items-center gap-2">
-										<span className="text-sm sm:text-md font-medium">
-											{product.regularPrice}
-										</span>
-										<PiLineVerticalThin className="text-gray-400" />
-										<span className="text-yellow-400 text-xs sm:text-sm font-medium">
-											4.7
-										</span>
-										<svg
-											className="w-4 h-4 text-yellow-400"
-											fill="currentColor"
-											viewBox="0 0 20 20"
+									<div className="text-center mb-2 flex justify-center items-center gap-2">
+										<p
+											className={`text-gray-500 font-semibold ${
+												product?.discountedPrice ? "line-through" : ""
+											}`}
 										>
-											<path d="M10 15l-5.878 3.09 1.122-6.545L.366 7.91l6.564-.954L10 .25l3.07 6.705 6.564.954-4.878 4.635L15.878 18z" />
-										</svg>
+											₹ {product?.salePrice}
+										</p>
+										{product?.discountedPrice && (
+											<p className="text-red-600 font-semibold">
+												({product?.offerPercentage}% OFF)
+											</p>
+										)}
+									</div>
+									<div className="flex items-center justify-center gap-2">
+										{product?.discountedPrice && (
+											<p className="text-black font-semibold">
+												₹ {product?.discountedPrice}
+											</p>
+										)}
+										{product?.discountedPrice && (
+											<PiLineVerticalThin className="text-gray-400" />
+										)}
+
+										<div className="flex items-center gap-1">
+											<span className="text-yellow-400 text-xs sm:text-sm font-medium">
+												4.7
+											</span>
+											<svg
+												className="w-4 h-4 text-yellow-400"
+												fill="currentColor"
+												viewBox="0 0 20 20"
+											>
+												<path d="M10 15l-5.878 3.09 1.122-6.545L.366 7.91l6.564-.954L10 .25l3.07 6.705 6.564.954-4.878 4.635L15.878 18z" />
+											</svg>
+										</div>
 									</div>
 								</div>
 							</div>

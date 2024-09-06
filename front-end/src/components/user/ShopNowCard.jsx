@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import Link from react-router-dom
+import { useNavigate } from "react-router-dom";
 
 const ShopNowCard = () => {
 	const navigate = useNavigate();
@@ -35,13 +35,13 @@ const ShopNowCard = () => {
 					>
 						<div className="relative h-[250px] sm:h-[350px]">
 							<img
-								src="https://i.pinimg.com/originals/77/cf/9c/77cf9c906545249e734a649339a21b87.jpg"
+								src="/Mens1.png"
 								alt="Men's Collection"
 								className="absolute inset-0 h-full w-full object-cover opacity-100 group-hover:opacity-0 transition-opacity duration-500 ease-in-out"
 							/>
 
 							<img
-								src="https://i.pinimg.com/originals/91/ea/06/91ea0618d6a45c0d76c97d7cfe703070.jpg"
+								src="Mens2.png"
 								alt="Men's Collection Hover"
 								className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out"
 							/>
@@ -73,13 +73,13 @@ const ShopNowCard = () => {
 					>
 						<div className="relative h-[250px] sm:h-[350px]">
 							<img
-								src="https://i.pinimg.com/originals/a4/db/a2/a4dba283b9c27320e92897f87bf04ab1.jpg"
+								src="/Womens1.png"
 								alt="Women's Collection"
 								className="absolute inset-0 h-full w-full object-cover opacity-100 group-hover:opacity-0 transition-opacity duration-500 ease-in-out"
 							/>
 
 							<img
-								src="https://i.pinimg.com/originals/5e/41/c4/5e41c47964758057296e948024ddbb98.jpg"
+								src="/Womens2.png"
 								alt="Women's Collection Hover"
 								className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out"
 							/>
@@ -111,13 +111,13 @@ const ShopNowCard = () => {
 					>
 						<div className="relative h-[250px] sm:h-[350px]">
 							<img
-								src="https://i.pinimg.com/originals/c3/96/8e/c3968e439bd0d45aa169c90ac74aebea.jpg"
+								src="/Kid1.png"
 								alt="Kids' Collection"
 								className="absolute inset-0 h-full w-full object-cover opacity-100 group-hover:opacity-0 transition-opacity duration-500 ease-in-out"
 							/>
 
 							<img
-								src="https://i.pinimg.com/564x/a9/ca/98/a9ca989c98c43004290a28b55d2883c6.jpg"
+								src="/Kid2.png"
 								alt="Kids' Collection Hover"
 								className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out"
 							/>
