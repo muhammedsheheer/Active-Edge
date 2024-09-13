@@ -4,6 +4,7 @@ import { uploadImage } from "../utils/imageUplode.js";
 const createBrand = async (req, res) => {
 	try {
 		const { brandName, brandTitle, logo } = req.body;
+
 		const logoUrl = await uploadImage(logo, "mybrandImages", 200, 200, "fill");
 
 		if (!brandName) {
@@ -88,6 +89,7 @@ const editBrand = async (req, res) => {
 const removeBrand = async (req, res) => {
 	try {
 		const { brandId } = req.params;
+		console.log(req.params);
 
 		if (!brandId) {
 			return res.status(400).json({ message: "Brand ID is required" });
@@ -101,6 +103,8 @@ const removeBrand = async (req, res) => {
 		await Brands.findByIdAndDelete(brandId);
 		return res.status(200).json({ message: "Brand removed successfully" });
 	} catch (error) {
+		console.log(error);
+
 		return res.status(500).json({ message: error.message });
 	}
 };

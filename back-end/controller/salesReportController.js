@@ -22,6 +22,9 @@ const getSalesReport = async (startDate, endDate, period) => {
 	} else if (period === "month") {
 		start = moment().startOf("month");
 		end = moment().endOf("month");
+	} else if (period === "year") {
+		start = moment().startOf("year");
+		end = moment().endOf("year");
 	} else if (startDate && endDate) {
 		start = moment(startDate).startOf("day");
 		end = moment(endDate).endOf("day");
@@ -70,129 +73,6 @@ const generateReport = async (req, res) => {
 		return res.status(500).json({ message: error.message });
 	}
 };
-
-// const downloadReport = async (req, res) => {
-// 	try {
-// 		const { format, startDate, endDate, period } = req.query;
-// 		const reportData = await getSalesReport(startDate, endDate, period);
-
-// 		if (format === "xlsx") {
-// 			const workbook = new ExcelJS.Workbook();
-// 			const worksheet = workbook.addWorksheet("Sales Report");
-
-// 			worksheet.columns = [
-// 				{ header: "Order ID", key: "_id", width: 30 },
-// 				{ header: "Date", key: "createdAt", width: 20 },
-// 				{ header: "Total Amount", key: "theTotelAmount", width: 15 },
-// 				{ header: "Discount", key: "discount", width: 15 },
-// 			];
-
-// 			reportData.orders.forEach((order) => {
-// 				worksheet.addRow({
-// 					_id: order._id,
-// 					createdAt: moment(order.createdAt).format("YYYY-MM-DD HH:mm:ss"),
-// 					theTotelAmount: order.theTotelAmount,
-// 					discount: order.discount,
-// 				});
-// 			});
-
-// 			res.setHeader(
-// 				"Content-Type",
-// 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-// 			);
-// 			res.setHeader(
-// 				"Content-Disposition",
-// 				"attachment; filename=sales_report.xlsx"
-// 			);
-
-// 			await workbook.xlsx.write(res);
-// 			res.end();
-// 		} else if (format === "pdf") {
-// 			const doc = new PDFDocument({ margin: 40, size: "A4" });
-
-// 			res.setHeader("Content-Type", "application/pdf");
-// 			res.setHeader(
-// 				"Content-Disposition",
-// 				"attachment; filename=sales_report.pdf"
-// 			);
-
-// 			doc.pipe(res);
-
-// 			// Title
-// 			doc
-// 				.fontSize(20)
-// 				.text("Sales Report", { align: "center", underline: true });
-// 			doc.moveDown(2);
-
-// 			// Summary
-// 			doc.fontSize(12).text(`Sales Count: ${reportData.overallSalesCount}`);
-// 			doc.fontSize(12).text(`Order Amount: ${reportData.overallOrderAmount}`);
-// 			doc.fontSize(12).text(`Discount: ${reportData.overallDiscount}`);
-// 			doc.moveDown(1.5);
-
-// 			// Table Header with Background
-// 			const tableTop = doc.y;
-// 			const columnWidth = 140; // Adjusted for more space in Date column
-// 			const rowHeight = 20;
-// 			const headerBgColor = "#f2f2f2";
-
-// 			// Background for headers
-// 			doc.rect(30, tableTop, 520, rowHeight).fill(headerBgColor).stroke();
-
-// 			doc
-// 				.fillColor("black")
-// 				.fontSize(12)
-// 				.text("Order ID", 35, tableTop + 5, { width: 120, align: "left" }); // Adjusted width
-// 			doc.text("Date", 165, tableTop + 5, {
-// 				width: columnWidth,
-// 				align: "left",
-// 			}); // Increased width for more space
-// 			doc.text("Total Amount", 325, tableTop + 5, {
-// 				width: 110,
-// 				align: "right",
-// 			});
-// 			doc.text("Discount", 455, tableTop + 5, { width: 90, align: "right" });
-// 			doc.moveDown(1);
-
-// 			// Horizontal line to separate header from data
-// 			doc.moveTo(30, doc.y).lineTo(550, doc.y).stroke();
-// 			doc.moveDown(0.5);
-
-// 			// Table Rows with Borders
-// 			reportData.orders.forEach((order, index) => {
-// 				const y = doc.y;
-// 				const rowColor = index % 2 === 0 ? "#f9f9f9" : "#ffffff"; // alternating row colors
-// 				doc.rect(30, y, 520, rowHeight).fill(rowColor).stroke();
-// 				doc.fillColor("black");
-
-// 				doc
-// 					.fontSize(10)
-// 					.text(order._id, 35, y + 5, { width: 120, align: "left" });
-// 				doc.text(
-// 					moment(order.createdAt).format("YYYY-MM-DD HH:mm:ss"),
-// 					165,
-// 					y + 5,
-// 					{ width: columnWidth, align: "left" }
-// 				); // Adjusted for more space
-// 				doc.text(order.theTotelAmount.toFixed(2), 325, y + 5, {
-// 					width: 110,
-// 					align: "right",
-// 				});
-// 				doc.text(order.discount.toFixed(2), 455, y + 5, {
-// 					width: 90,
-// 					align: "right",
-// 				});
-// 				doc.moveDown(1);
-// 			});
-
-// 			doc.end();
-// 		} else {
-// 			res.status(400).send("Invalid format");
-// 		}
-// 	} catch (error) {
-// 		return res.status(500).json({ message: error.message });
-// 	}
-// };
 
 const downloadReport = async (req, res) => {
 	try {
@@ -366,4 +246,165 @@ const downloadReport = async (req, res) => {
 	}
 };
 
-export { generateReport, downloadReport };
+const getSalesReportOnDashboard = async (startDate, endDate, period) => {
+	let start, end, groupFormat;
+
+	period = period || "week";
+
+	if (period === "day") {
+		start = moment().startOf("day");
+		end = moment().endOf("day");
+		groupFormat = "%Y-%m-%d";
+	} else if (period === "week") {
+		start = moment().startOf("week");
+		end = moment().endOf("week");
+		groupFormat = "%Y-%m-%d";
+	} else if (period === "month") {
+		start = moment().startOf("month");
+		end = moment().endOf("month");
+		groupFormat = "%Y-%m-%d";
+	} else if (period === "year") {
+		start = moment().startOf("year");
+		end = moment().endOf("year");
+		groupFormat = "%Y-%m";
+	} else if (startDate && endDate) {
+		start = moment(startDate).startOf("day");
+		end = moment(endDate).endOf("day");
+		groupFormat = "%Y-%m-%d";
+	} else {
+		throw new Error("Invalid date range");
+	}
+
+	const orders = await Order.aggregate([
+		{
+			$match: {
+				createdAt: { $gte: start.toDate(), $lte: end.toDate() },
+			},
+		},
+		{
+			$group: {
+				_id: {
+					$dateToString: { format: groupFormat, date: "$createdAt" },
+				},
+				totalAmount: { $sum: "$theTotelAmount" },
+				orderCount: { $sum: 1 },
+			},
+		},
+		{
+			$sort: { _id: 1 },
+		},
+	]);
+
+	let result = [];
+	if (period === "day") {
+		let date = start.clone();
+		while (date <= end) {
+			const key = date.format("YYYY-MM-DD");
+			const existing = orders.find((order) => order._id === key);
+			result.push({
+				_id: key,
+				totalAmount: existing ? existing.totalAmount : 0,
+				orderCount: existing ? existing.orderCount : 0,
+			});
+			date.add(1, "day");
+		}
+	} else if (period === "week") {
+		const weekDays = [
+			"Sunday",
+			"Monday",
+			"Tuesday",
+			"Wednesday",
+			"Thursday",
+			"Friday",
+			"Saturday",
+		];
+		for (let i = 0; i < 7; i++) {
+			const date = start.clone().add(i, "days");
+			const key = date.format("YYYY-MM-DD");
+			const existing = orders.find((order) => order._id === key);
+			result.push({
+				_id: weekDays[date.day()],
+				totalAmount: existing ? existing.totalAmount : 0,
+				orderCount: existing ? existing.orderCount : 0,
+			});
+		}
+	} else if (period === "month") {
+		let currentWeekStart = start.clone();
+		let currentWeekEnd = currentWeekStart.clone().endOf("week");
+		while (currentWeekStart <= end) {
+			const key = currentWeekStart.format("YYYY-MM-DD");
+			const existing = orders.find((order) => order._id === key);
+			result.push({
+				_id: `Week ${currentWeekStart.week()}`,
+				totalAmount: existing ? existing.totalAmount : 0,
+				orderCount: existing ? existing.orderCount : 0,
+			});
+			currentWeekStart.add(1, "week");
+			currentWeekEnd = currentWeekStart.clone().endOf("week");
+		}
+	} else if (period === "year") {
+		const months = moment.months();
+		result = months.map((month, index) => {
+			const key = moment().month(index).format("YYYY-MM");
+			const existing = orders.find((order) => order._id === key);
+			return {
+				_id: month,
+				totalAmount: existing ? existing.totalAmount : 0,
+				orderCount: existing ? existing.orderCount : 0,
+			};
+		});
+	}
+
+	const overallSalesCount = result.reduce(
+		(acc, order) => acc + order.orderCount,
+		0
+	);
+	const overallOrderAmount = result.reduce(
+		(acc, order) => acc + order.totalAmount,
+		0
+	);
+	let averageSales = 0;
+	if (period === "week") {
+		averageSales = Math.round(overallOrderAmount / 7);
+	}
+	if (period === "month") {
+		averageSales = Math.round(overallOrderAmount / 4);
+	}
+	if (period === "year") {
+		averageSales = Math.round(overallOrderAmount / 12);
+	}
+
+	return {
+		overallSalesCount,
+		overallOrderAmount,
+		averageSales,
+		orders: result,
+	};
+};
+
+const generateReportOnDashboard = async (req, res) => {
+	try {
+		const { startDate, endDate, period } = req.query;
+		const reportData = await getSalesReportOnDashboard(
+			startDate,
+			endDate,
+			period
+		);
+
+		res.status(200).json({
+			message: "Order fetched successfully",
+			report: reportData,
+		});
+	} catch (error) {
+		console.log(error);
+
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+export {
+	generateReport,
+	downloadReport,
+	getSalesReportOnDashboard,
+	generateReportOnDashboard,
+};

@@ -122,7 +122,7 @@ const WishListComponent = ({ userId }) => {
 	};
 
 	const handleProductDetails = (productId) => {
-		navigate(`/productDetails/${productId}`);
+		navigate(`/productDetials/${productId}`);
 	};
 
 	return (

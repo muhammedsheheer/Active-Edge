@@ -74,6 +74,7 @@ const CheckOut = () => {
 				selectedAddress,
 			},
 		});
+		window.scrollTo({ top: 0, behavior: "instant" });
 	};
 
 	return (

@@ -21,11 +21,25 @@ const generateCaptcha = () => {
 };
 
 const PaymentOptions = () => {
+	useEffect(() => {
+		window.history.pushState(null, "", window.location.href);
+		const handlePopState = () => {
+			window.history.pushState(null, "", window.location.href);
+			alert("You cannot go back to the payment page.");
+		};
+		window.addEventListener("popstate", handlePopState);
+		return () => {
+			window.removeEventListener("popstate", handlePopState);
+		};
+	}, []);
+
 	const userId = useSelector((state) => state.auth.user);
 
 	const items = useSelector((state) => state.cart.cartItems.items);
 
 	const location = useLocation();
+	console.log("location", location.state);
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { totalAmount, discount, discountedAmount, selectedAddress } =
@@ -57,6 +71,8 @@ const PaymentOptions = () => {
 	const createOrder = async (orderData) => {
 		try {
 			const response = await api.post("/order/create-order", orderData);
+			console.log("the  response is", response.data);
+
 			return response.data;
 		} catch (error) {
 			console.error("Error creating order:", error);
@@ -64,9 +80,44 @@ const PaymentOptions = () => {
 		}
 	};
 
+	const createRazorpayOrder = async (orderData) => {
+		try {
+			const response = await api.post(
+				"/order/create-razorpay-order",
+				orderData
+			);
+			console.log("the create", response.data);
+
+			return response.data;
+		} catch (error) {
+			console.error("Error creating order:", error);
+			throw error;
+		}
+	};
+
+	const confirmRazorpayOrder = async (orderDetails) => {
+		try {
+			const response = await api.post("/order/verify-Razorpay", orderDetails);
+			console.log("the confirm", response.data);
+			if (response.status === 201) {
+				dispatch(clearCart());
+				navigate("/confirmation", {
+					state: { orderDetails: response.data.order },
+				});
+			}
+		} catch (error) {
+			console.error("Error confirming Razorpay order:", error);
+			toast.error("Payment failed. Please retry.");
+		}
+	};
+
 	const handleCashOnDelivery = async (paymentMethod) => {
 		if (captchaInput !== captcha) {
-			alert("Invalid captcha. Please try again.");
+			toast.error("Invalid captcha. Please try again.");
+			return;
+		}
+		if (theTotelAmount > 1000) {
+			toast.error("Cash on Delivery is not allowed for orders above ₹1000.");
 			return;
 		}
 
@@ -95,7 +146,7 @@ const PaymentOptions = () => {
 			}
 		} catch (error) {
 			console.error("Failed to create order:", error);
-			alert("Failed to create order. Please try again.");
+			toast.error("Failed to create order. Please try again.");
 		}
 	};
 
@@ -110,21 +161,29 @@ const PaymentOptions = () => {
 			discountedAmount,
 		};
 
-		const orderResponse = await createOrder(orderData);
+		const orderResponse = await createRazorpayOrder(orderData);
 
 		if (orderResponse) {
-			console.log("the order response ", orderResponse);
 			const options = {
 				key: import.meta.env.VITE_RAZORPAY_KEY_ID,
 				amount: theTotelAmount * 100,
 				currency: "INR",
 				name: userDetails.name,
 				description: "Order Payment",
-				order_id: orderResponse.order.razorpayOrderId,
+				order_id: orderResponse.razorpayOrderId,
 				handler: function (response) {
-					dispatch(clearCart());
-					navigate("/confirmation", {
-						state: { orderDetails: orderResponse.data },
+					const { razorpay_payment_id, razorpay_order_id } = response;
+
+					confirmRazorpayOrder({
+						userId,
+						items,
+						shippingAddress: selectedAddress,
+						paymentMethod,
+						theTotelAmount,
+						discount,
+						discountedAmount,
+						razorpayPaymentId: razorpay_payment_id,
+						razorpayOrderId: razorpay_order_id,
 					});
 				},
 				prefill: {
@@ -135,7 +194,21 @@ const PaymentOptions = () => {
 				theme: {
 					color: "#3399cc",
 				},
+				modal: {
+					ondismiss: function () {
+						toast.error("Payment not completed. Please try again.");
+						navigate("/retryPayment", {
+							state: {
+								totalAmount,
+								discount,
+								discountedAmount,
+								selectedAddress,
+							},
+						});
+					},
+				},
 			};
+
 			const rzp = new window.Razorpay(options);
 			rzp.open();
 		} else {
@@ -156,7 +229,6 @@ const PaymentOptions = () => {
 			};
 
 			const orderResponse = await createOrder(orderData);
-			console.log("order response", orderResponse);
 
 			if (orderResponse) {
 				dispatch(clearCart());
@@ -169,7 +241,7 @@ const PaymentOptions = () => {
 			}
 		} catch (error) {
 			console.error("Failed to create order:", error);
-			alert("Failed to create order. Please try again.");
+			toast.error("You don't have enough balance, please use another method.");
 		}
 	};
 

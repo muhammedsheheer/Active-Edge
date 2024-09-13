@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/createBrand", isAuth, isAuthAdmin, createBrand);
 router.get("/getbrands", isAuth, isAuthAdmin, getBrands);
-router.put("/edit-brand", isAuth, isAuthAdmin, editBrand);
-router.delete("/delete-brand", isAuth, isAuthAdmin, removeBrand);
+router.put("/edit-brand/:brandId", isAuth, isAuthAdmin, editBrand);
+router.delete("/delete-brand/:brandId", isAuth, isAuthAdmin, removeBrand);
 
 export default router;

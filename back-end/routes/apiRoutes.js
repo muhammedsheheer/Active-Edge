@@ -10,12 +10,13 @@ import coupenRoutes from "./coupenRoutes.js";
 import walletRoutes from "./walletRoutes.js";
 import salesReportRoutes from "./salesReportRoute.js";
 import offerRoutes from "./offerRoutes.js";
+import bestSellingRoutes from "./bestSellingRoutes.js";
 
 const app = express.Router();
 
 app.use("/users", userRoute);
 app.use("/category", categoryRoutes);
-app.use("/brand", brandRoutes);
+app.use("/brands", brandRoutes);
 app.use("/product", productRoutes);
 app.use("/wishlist", wishListRoutes);
 app.use("/cart", cartRoutes);
@@ -24,5 +25,6 @@ app.use("/coupen", coupenRoutes);
 app.use("/wallet", walletRoutes);
 app.use("/report", salesReportRoutes);
 app.use("/offer", offerRoutes);
+app.use("/best-selling", bestSellingRoutes);
 
 export default app;

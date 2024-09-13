@@ -163,13 +163,16 @@ const NavBar = () => {
 
 						<Link
 							to={user ? "/wishlist" : "/login"}
+							onClick={() => window.scrollTo(0, 0)}
 							className="ml-3 p-1 rounded-full text-black hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
 						>
 							<span className="sr-only">Favorites</span>
+
 							<CiHeart className="h-6 w-6" />
 						</Link>
 						<Link
 							to={user ? "/cart" : "/login"}
+							onClick={() => window.scrollTo(0, 0)}
 							className="relative ml-3 p-1 rounded-full text-black hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
 						>
 							<span className="sr-only">Cart</span>
@@ -182,6 +185,7 @@ const NavBar = () => {
 						</Link>
 						<Link
 							to={user ? "/profile" : "/login"}
+							onClick={() => window.scrollTo(0, 0)}
 							className="ml-3 p-1 rounded-full text-black hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
 						>
 							<span className="sr-only">User</span>

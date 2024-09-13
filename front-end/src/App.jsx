@@ -38,6 +38,11 @@ import ForgotPassword from "./pages/user/ForgotPassword.jsx";
 import ResetPassword from "./pages/user/ResetPassword.jsx";
 import SalesReport from "./pages/admin/salesReport/SalesReport.jsx";
 import Offers from "./pages/admin/offers/Offers.jsx";
+import BestSelling from "./pages/admin/BestSelling/BestSelling.jsx";
+import Dashboard from "./pages/admin/Dashboard/Dashboard.jsx";
+import OrderFailure from "./pages/user/OrderFailure.jsx";
+import CheckOutWrapper from "./utils/CheckOutRaper.jsx";
+import Brand from "./pages/admin/Brand/Brand.jsx";
 
 function App() {
 	return (
@@ -63,10 +68,13 @@ function App() {
 						</Route>
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/wishlist" element={<Wishlist />} />
-						<Route path="/checkOut" element={<CheckOutPage />} />
-						<Route path="/payment" element={<PaymentPage />} />
-						<Route path="/confirmation" element={<OrderConfirmation />} />
-						<Route path="/orderDetails" element={<OrderDetailses />} />
+						<Route element={<CheckOutWrapper />}>
+							<Route path="/checkOut" element={<CheckOutPage />} />
+							<Route path="/payment" element={<PaymentPage />} />
+							<Route path="/confirmation" element={<OrderConfirmation />} />
+							<Route path="retryPayment" element={<OrderFailure />} />
+						</Route>
+						<Route path="/orderDetails/:orderId" element={<OrderDetailses />} />
 					</Route>
 				</Route>
 				{/* Authanticate route */}
@@ -80,10 +88,12 @@ function App() {
 				{/* {admin routes} */}
 				<Route element={<ProtectedAdminRoute />}>
 					<Route path="/dashboard" element={<AdminLayout />}>
+						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="products" element={<Product />} />
 						<Route path="addNewProduct" element={<ProductForm />} />
 						<Route path="editproduct/:productId" element={<ProductForm />} />
 						<Route path="categorys" element={<Category />} />
+						<Route path="brands" element={<Brand/>}/>
 						<Route path="customers" element={<Customers />} />
 						<Route path="orderDetails/:id" element={<OrderDetails />} />
 						<Route path="orders" element={<Order />} />
@@ -91,6 +101,7 @@ function App() {
 						<Route path="returnes" element={<Return />} />
 						<Route path="salesReport" element={<SalesReport />} />
 						<Route path="offers" element={<Offers />} />
+						<Route path="bestSelling" element={<BestSelling />} />
 					</Route>
 				</Route>
 			</Routes>

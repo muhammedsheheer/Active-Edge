@@ -163,6 +163,7 @@ const CartCard = () => {
 				discountedAmount,
 			},
 		});
+		window.scrollTo({ top: 0, behavior: "instant" });
 	};
 
 	const handleShopNow = () => {
@@ -348,7 +349,7 @@ const CartCard = () => {
 						Just relax, let us help you find some first-class products.
 					</p>
 					<img
-						src="../../../public/EmptycartImage.png"
+						src={"/EmptycartImage.png"}
 						alt="Empty Wishlist"
 						className="w-96 h-56 mb-6"
 					/>

@@ -55,11 +55,9 @@ export const validateRegisterForm = (input) => {
 	return errors;
 };
 
-// validate product form
 export const validateProductForm = (inputField) => {
 	const newError = {};
 
-	// Basic field validations
 	if (!inputField.productName)
 		newError.productName = "Product name is required*";
 	if (!inputField.description)
@@ -68,7 +66,6 @@ export const validateProductForm = (inputField) => {
 	if (!inputField.brand) newError.brand = "Brand is required*";
 	if (!inputField.gender) newError.gender = "Gender is required*";
 
-	// Price validations
 	if (!inputField.regularPrice) {
 		newError.regularPrice = "Regular price is required*";
 	} else if (inputField.regularPrice < 0) {
@@ -80,21 +77,37 @@ export const validateProductForm = (inputField) => {
 	} else if (inputField.salePrice < 0) {
 		newError.salePrice = "Sale price cannot be negative";
 	}
+	console.log(inputField.sizes);
 
-	// Sizes array validation
-	if (!inputField.sizes || inputField.sizes.length === 0) {
-		newError.sizes = "At least one size is required*";
-	} else {
-		// Specific size validations
-		inputField.sizes.forEach((sizeObj, index) => {
-			if (sizeObj.size === undefined || sizeObj.size < 0) {
-				newError[`sizes[${index}].size`] = "Size cannot be negative";
-			}
-			if (sizeObj.stock === undefined || sizeObj.stock < 0) {
-				newError[`sizes[${index}].stock`] = "Stock cannot be negative";
-			}
-		});
-	}
+	// Specific size validations
+	inputField.sizes.forEach((sizeObj, index) => {
+		console.log(sizeObj);
+
+		// Convert size and stock to numbers
+		const size = Number(sizeObj?.size);
+		const stock = Number(sizeObj?.stock);
+		console.log(isNaN(size) < 0, stock);
+		// Validate size
+		if (isNaN(size) || size <= 0) {
+			console.log("Validated............size");
+
+			newError.sizes = newError.sizes || [];
+			newError.sizes[index] = {
+				...newError.sizes[index],
+				size: "Size cannot be negative or invalid",
+			};
+		}
+
+		// Validate stock
+		if (isNaN(stock) || stock <= 0) {
+			console.log("Validated............stock");
+			newError.sizes = newError.sizes || [];
+			newError.sizes[index] = {
+				...newError.sizes[index],
+				stock: "stock cannot be negative or invalid",
+			};
+		}
+	});
 
 	return newError;
 };

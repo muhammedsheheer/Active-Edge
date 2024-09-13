@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../../config/axiosConfig";
 
 const SalesReport = () => {
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
-	const [period, setPeriod] = useState("");
+	const [period, setPeriod] = useState("day");
 	const [format, setFormat] = useState("pdf");
 	const [reportData, setReportData] = useState(null);
+
+	useEffect(() => {
+		handleFetchData("day");
+	}, []);
 
 	const handleFetchData = async (
 		selectedPeriod = "",
@@ -21,7 +25,7 @@ const SalesReport = () => {
 					period: selectedPeriod || undefined,
 				},
 			});
-			setReportData(response.data.report);
+			setReportData(response?.data?.report);
 		} catch (error) {
 			console.error("Error fetching the report:", error);
 		}
@@ -46,7 +50,7 @@ const SalesReport = () => {
 	};
 
 	const renderReportTable = () => {
-		if (!reportData) return <p>No data available</p>;
+		if (!reportData) return <p>No data available for today</p>;
 
 		return (
 			<table className="min-w-full table-auto">

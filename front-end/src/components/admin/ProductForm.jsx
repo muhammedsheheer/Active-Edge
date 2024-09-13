@@ -32,7 +32,7 @@ const ProductForm = () => {
 		gender: "",
 		regularPrice: "",
 		salePrice: "",
-		sizes: [{ size: "", stock: 0 }],
+		sizes: [{ size: 0, stock: 0 }],
 	});
 	const [imageData, setImageData] = useState({
 		thumbnail: null,
@@ -57,7 +57,6 @@ const ProductForm = () => {
 		console.log("render");
 	}, [productId]);
 
-	// fetching the current product to edit
 	const fetchProductDetial = useCallback(
 		async (id) => {
 			try {
@@ -95,13 +94,6 @@ const ProductForm = () => {
 		navigate("/dashboard/products");
 	};
 
-	// size fields adding
-	// const handleSizeChange = (index, field, value) => {
-	// 	const newSizes = [...formData.sizes];
-	// 	newSizes[index][field] = value;
-	// 	setFormData({ ...formData, sizes: newSizes });
-	// };
-
 	const handleSizeChange = (index, field, value) => {
 		if (field === "size" && value < 0) {
 			setErrors({ ...errors, sizes: "Size cannot be negative." });
@@ -138,12 +130,15 @@ const ProductForm = () => {
 		// setImageData(data);
 	};
 
-	const { thumbnail, galleryImages } = imageData;
-
 	const submitProductForm = async () => {
+		const { thumbnail, galleryImages } = imageData;
 		const validateForm = validateProductForm(formData);
 		setErrors(validateForm);
-		console.log(validateForm);
+
+		console.log(
+			imageData,
+			"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj"
+		);
 
 		if (Object.keys(validateForm).length === 0) setLoading(true);
 		try {
@@ -151,6 +146,7 @@ const ProductForm = () => {
 			let response;
 			if (isEditing) {
 				response = await api.put(`product/productEdit/${productId}`, data);
+				console.log(response);
 			} else {
 				response = await api.post("product/createProduct", data);
 			}
@@ -178,7 +174,7 @@ const ProductForm = () => {
 			}
 			console.log("rsp of Productadd", response);
 		} catch (error) {
-			console.error(error);
+			console.error(error.message);
 		} finally {
 			setLoading(false);
 		}
@@ -415,9 +411,10 @@ const ProductForm = () => {
 												}
 												className="flex-grow border border-gray-300 rounded-md shadow-sm p-2"
 											/>
-											{errors[`sizes[${index}].size`] && (
+
+											{errors.sizes && errors?.sizes[index]?.size && (
 												<p className="absolute text-red-600 text-xs mt-1">
-													{errors[`sizes[${index}].size`]}
+													{errors.sizes[index].size}
 												</p>
 											)}
 										</div>
@@ -431,16 +428,16 @@ const ProductForm = () => {
 												}
 												className="flex-grow border border-gray-300 rounded-md shadow-sm p-2"
 											/>
-											{errors[`sizes[${index}].stock`] && (
+											{errors.sizes && errors?.sizes[index]?.stock && (
 												<p className="absolute text-red-600 text-xs mt-1">
-													{errors[`sizes[${index}].stock`]}
+													{errors.sizes[index].stock}
 												</p>
 											)}
 										</div>
 										<button
 											type="button"
 											onClick={() => removeSize(index)}
-											className="p-1 text-red-600 border-2 border-red-600 rounded-sm"
+											className="p-1 text-red-600 border-2 border-red-600 rounded-sm mt-10"
 										>
 											<AiFillCloseSquare />
 										</button>

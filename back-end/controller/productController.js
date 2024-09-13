@@ -231,7 +231,10 @@ const updateProduct = async (req, res) => {
 			(product.sizes = sizes || product.sizes),
 			(product.status = status !== undefined ? status : product.status);
 
-		if (thumbnail) {
+		const isCloudinaryUrl = (url) =>
+			url.startsWith("https://res.cloudinary.com");
+
+		if (thumbnail && !isCloudinaryUrl(thumbnail)) {
 			product.thumbnail = await uploadImage(
 				thumbnail,
 				"myProducts/thumbnail",
@@ -241,13 +244,20 @@ const updateProduct = async (req, res) => {
 		}
 
 		if (galleryImages) {
-			product.gallery = await uploadMultipleImages(
-				galleryImages,
-				"myProducts/thumbnail",
-				600,
-				600
+			const imagesToUpload = galleryImages.filter(
+				(image) => !isCloudinaryUrl(image)
 			);
+
+			if (imagesToUpload.length > 0) {
+				product.gallery = await uploadMultipleImages(
+					imagesToUpload,
+					"myProducts/thumbnail",
+					600,
+					600
+				);
+			}
 		}
+
 		const updatedProduct = await product.save();
 		return res
 			.status(200)

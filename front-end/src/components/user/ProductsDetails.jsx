@@ -83,7 +83,6 @@ const ProductsDetails = () => {
 	}, [wishlist, product]);
 
 	const [isInWishlist, setIsInWishlist] = useState(false);
-	console.log("is in wishlist", isInWishlist);
 
 	const handleWish = () => {
 		if (!userId) {
@@ -100,7 +99,6 @@ const ProductsDetails = () => {
 	const fetchProductDetails = async () => {
 		try {
 			const response = await api.get(`/product/productDetails/${id}`);
-			console.log("the response ", response);
 
 			if (response?.data?.productsDetails) {
 				setDatas(response.data);
@@ -230,6 +228,9 @@ const ProductsDetails = () => {
 						) : (
 							<Link to="/cart">
 								<button
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "instant" })
+									}
 									className={
 										product?.status
 											? "bg-black text-white px-4 py-2 text-sm"
