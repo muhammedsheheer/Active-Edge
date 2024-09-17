@@ -70,7 +70,6 @@ const deleteCoupen = async (req, res) => {
 const validateCoupen = async (req, res) => {
 	try {
 		const { code, purchaseAmount } = req.body;
-		console.log("the get ", req.body);
 
 		const userId = req.user.id;
 

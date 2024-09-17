@@ -8,7 +8,7 @@ import {
 	updateCartItem,
 } from "../../../redux/slices/cartSlice";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../config/axiosConfig";
 import CouponModal from "./CoupenModal";
 
@@ -25,19 +25,6 @@ const CartCard = () => {
 	const MAX_QUANTITY = 5;
 
 	const [showCouponModal, setShowCouponModal] = useState(false);
-
-	const fetchCoupons = async () => {
-		try {
-			const response = await api.get("/coupen/get-coupen");
-			setCoupons(response.data.coupens);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	useEffect(() => {
-		fetchCoupons();
-	}, []);
 
 	useEffect(() => {
 		dispatch(getCarItems());
@@ -117,6 +104,19 @@ const CartCard = () => {
 			calculateTotalAmount(updatedItems);
 		});
 	};
+
+	const fetchCoupons = async () => {
+		try {
+			const response = await api.get("/coupen/get-coupen");
+			setCoupons(response.data.coupens);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchCoupons();
+	}, []);
 
 	const removeCoupon = async (coupon) => {
 		try {
