@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Magnifier from "react-magnifier";
+// import Magnifier from "react-magnifier";
 import api from "../../config/axiosConfig";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import RelatedProduct from "./RelatedProduct";
@@ -149,7 +149,7 @@ const ProductsDetails = () => {
 							{loading ? (
 								<p>Loading...</p>
 							) : (
-								<Magnifier
+								<img
 									src={mainImage}
 									alt="Main"
 									className="w-full h-80 object-contain"
