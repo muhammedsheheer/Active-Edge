@@ -3,7 +3,7 @@ import { logoutUser } from "../../redux/slices/authSlice";
 import store from "../../redux/store/store";
 
 const api = axios.create({
-	baseURL: "http://localhost:5000/api",
+	baseURL: "https://activeedge-backend.onrender.com/api",
 	withCredentials: true,
 });
 
