@@ -162,11 +162,6 @@ const OrderDetailses = () => {
 								<span className="mx-2">|</span>
 								<span className="text-red-500">{orderData?.paymentMethod}</span>
 							</div>
-							<div>
-								<a href="#" className="text-blue-500">
-									Chat with us
-								</a>
-							</div>
 						</div>
 					</div>
 				</div>

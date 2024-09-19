@@ -48,14 +48,19 @@ const ProductsDetails = () => {
 		}
 		setError("");
 		try {
-			dispatch(
-				addCartItems({
-					productId: product._id,
-					size: selectSize,
-				})
-			);
-			toast.success("Added to cart successfully");
-			setIsInCart(!isInCart);
+			if (user) {
+				dispatch(
+					addCartItems({
+						productId: product._id,
+						size: selectSize,
+					})
+				);
+				toast.success("Added to cart successfully");
+				setIsInCart(!isInCart);
+			} else {
+				navigate("/login");
+				window.scrollTo({ top: 0, behavior: "instant" });
+			}
 		} catch (error) {
 			console.log(error);
 			toast.error("Faild to add");
