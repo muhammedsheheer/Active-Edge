@@ -11,9 +11,14 @@ connectDb();
 
 const app = express();
 
+const corsOrigin =
+	process.env.NODE_ENV === "production"
+		? "https://active-front-end.vercel.app"
+		: "http://localhost:3000";
+
 app.use(
 	cors({
-		origin: "http://localhost:3000",
+		origin: corsOrigin,
 		credentials: true,
 	})
 );

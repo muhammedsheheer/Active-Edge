@@ -2,8 +2,13 @@ import axios from "axios";
 import { logoutUser } from "../../redux/slices/authSlice";
 import store from "../../redux/store/store";
 
+const baseURL =
+	process.env.NODE_ENV === "production"
+		? "https://activeedge-backend.onrender.com/api"
+		: "http://localhost:5000/api";
+
 const api = axios.create({
-	baseURL: "https://activeedge-backend.onrender.com/api",
+	baseURL,
 	withCredentials: true,
 });
 
