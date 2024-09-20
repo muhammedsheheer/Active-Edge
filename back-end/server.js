@@ -12,14 +12,14 @@ connectDb();
 
 const app = express();
 
-// const corsOrigin =
-// 	process.env.NODE_ENV === "production"
-// 		? "https://active-front-end-mohammed-sheheer-cbs-projects.vercel.app"
-// 		: "http://localhost:3000";
+const corsOrigin =
+	process.env.NODE_ENV === "production"
+		? "https://active-front-end-mohammed-sheheer-cbs-projects.vercel.app"
+		: "http://localhost:3000";
 
 app.use(
 	cors({
-		origin: "*",
+		origin: corsOrigin,
 		credentials: true,
 	})
 );
@@ -28,9 +28,6 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "150mb" }));
 app.use(express.urlencoded({ limit: "150mb", extended: true }));
 app.use(cookieParser());
-const _dirname = path.dirname("");
-const buildpath = path.join(_dirname, "../front-end/build");
-app.use(express.static(buildpath));
 app.use("/api", appRoutes);
 
 app.get("/", (req, res) => {

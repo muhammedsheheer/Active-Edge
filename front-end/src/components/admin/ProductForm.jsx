@@ -43,7 +43,9 @@ const ProductForm = () => {
 		console.log("edit page upload renderd image dddddddddddddddddd");
 	}, [imageData]);
 	const fetchBrands = async () => {
-		const response = await api.get("/brand/getbrands");
+		const response = await api.get("/brands/getbrands");
+		console.log("brandssssss", response);
+
 		setGetBrands(response?.data?.brandData);
 	};
 
