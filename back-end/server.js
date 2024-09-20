@@ -40,6 +40,7 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
+import path from "path";
 import appRoutes from "./routes/apiRoutes.js";
 import cookieParser from "cookie-parser";
 import connectDb from "./config/mongodb.js";
@@ -52,7 +53,7 @@ const app = express();
 
 const corsOrigin =
 	process.env.NODE_ENV === "production"
-		? "https://active-front-end.vercel.app"
+		? "https://active-edge-client.onrender.com"
 		: "http://localhost:3000";
 
 app.use(
@@ -66,10 +67,14 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "150mb" }));
 app.use(express.urlencoded({ limit: "150mb", extended: true }));
 app.use(cookieParser());
+
 app.use("/api", appRoutes);
 
-app.get("/", (req, res) => {
-	res.json({ message: "Server is running" });
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "front-end/build")));
+
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "front-end/build", "index.html"));
 });
 
 app.listen(PORT, () => {

@@ -6,6 +6,10 @@
 // 	server: {
 // 		port: 3000,
 // 	},
+// 	build: {
+// 		outDir: "build",
+// 		chunkSizeWarningLimit: 1000,
+// 	},
 // });
 
 import { defineConfig } from "vite";
@@ -15,9 +19,29 @@ export default defineConfig({
 	plugins: [react()],
 	server: {
 		port: 3000,
+		proxy: {
+			"/api": {
+				target: "http://localhost:5000",
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/api/, ""),
+			},
+		},
 	},
 	build: {
-		outDir: "dist",
+		outDir: "build",
 		chunkSizeWarningLimit: 1000,
+		rollupOptions: {
+			output: {
+				manualChunks(id) {
+					if (id.includes("node_modules")) {
+						return id
+							.toString()
+							.split("node_modules/")[1]
+							.split("/")[0]
+							.toString();
+					}
+				},
+			},
+		},
 	},
 });

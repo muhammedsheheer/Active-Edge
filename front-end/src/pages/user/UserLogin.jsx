@@ -34,7 +34,7 @@ const UserLogin = () => {
 		setErrors(formValidate);
 		if (Object.keys(formValidate).length === 0) {
 			try {
-				const res = await api.post("users/login", formData);
+				const res = await api.post("/users/login", formData);
 				console.log("the response", res);
 				const { user, isAuthenticated, role } = res?.data;
 				dispatch(setUser({ user, isAuthenticated, role }));

@@ -3,7 +3,7 @@ import { logoutUser } from "../../redux/slices/authSlice";
 import store from "../../redux/store/store";
 
 const baseURL =
-	process.env.NODE_ENV === "production"
+	import.meta.env.VITE_NODE_ENV === "production"
 		? "https://activeedge-backend.onrender.com/api"
 		: "http://localhost:5000/api";
 
