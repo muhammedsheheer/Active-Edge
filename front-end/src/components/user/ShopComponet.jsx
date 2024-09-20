@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PiLineVerticalThin } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import SportsFitBanner from "./SportsFitBanner";
+import Pagination from "../common/Pagination";
 
 const ShopProductGrid = ({ data }) => {
 	const [listData, setListData] = useState([]);
@@ -10,6 +11,9 @@ const ShopProductGrid = ({ data }) => {
 	const [sortOption, setSortOption] = useState("Recommended");
 
 	const navigate = useNavigate();
+
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 6;
 
 	const handleProductDetails = (productId) => {
 		navigate(`/productDetials/${productId}`);
@@ -90,6 +94,10 @@ const ShopProductGrid = ({ data }) => {
 		}
 	};
 
+	const startIndex = (currentPage - 1) * itemsPerPage;
+	const endIndex = startIndex + itemsPerPage;
+	const currentItems = listData.slice(startIndex, endIndex);
+
 	return (
 		<>
 			<div className="mb-16">
@@ -158,7 +166,7 @@ const ShopProductGrid = ({ data }) => {
 						</select>
 					</div>
 					<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6">
-						{listData.map((product, index) => (
+						{currentItems.map((product, index) => (
 							<div key={index}>
 								<div
 									className="bg-white rounded-lg p-4 flex flex-col justify-center items-center cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6 transform hover:scale-105"
@@ -219,6 +227,11 @@ const ShopProductGrid = ({ data }) => {
 					</div>
 				</div>
 			</div>
+			<Pagination
+				currentPage={currentPage}
+				totalPages={Math.ceil(listData.length / itemsPerPage)}
+				onPageChange={(page) => setCurrentPage(page)}
+			/>
 		</>
 	);
 };
