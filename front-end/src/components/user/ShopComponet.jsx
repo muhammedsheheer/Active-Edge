@@ -17,7 +17,7 @@ const ShopProductGrid = ({ data }) => {
 	const itemsPerPage = 6;
 
 	const handleProductDetails = (productId) => {
-		navigate(`/productDetails/${productId}`);
+		navigate(`/productDetials/${productId}`);
 	};
 
 	useEffect(() => {
