@@ -2,21 +2,22 @@ import React, { useEffect, useState } from "react";
 import { PiLineVerticalThin } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import SportsFitBanner from "./SportsFitBanner";
+import Pagination from "../common/Pagination";
 
 const ShopProductGrid = ({ data }) => {
 	const [listData, setListData] = useState([]);
+	const [filteredData, setFilteredData] = useState([]);
 	const [selectedBrands, setSelectedBrands] = useState([]);
 	const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
 	const [sortOption, setSortOption] = useState("Recommended");
 
-	const [currentPage, setCurrentPage] = useState(1);
-	const itemsPerPage = 6; // Number of products per page
-	const totalPages = Math.ceil(listData.length / itemsPerPage);
-
 	const navigate = useNavigate();
 
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 6;
+
 	const handleProductDetails = (productId) => {
-		navigate(`/productDetials/${productId}`);
+		navigate(`/productDetails/${productId}`);
 	};
 
 	useEffect(() => {
@@ -26,16 +27,16 @@ const ShopProductGrid = ({ data }) => {
 	}, [data]);
 
 	useEffect(() => {
-		let filteredData = [...data];
+		let filteredList = [...listData];
 
 		if (selectedBrands.length > 0) {
-			filteredData = filteredData.filter((product) =>
+			filteredList = filteredList.filter((product) =>
 				selectedBrands.includes(product?.brand?.brandName)
 			);
 		}
 
 		if (selectedPriceRanges.length > 0) {
-			filteredData = filteredData.filter((product) =>
+			filteredList = filteredList.filter((product) =>
 				selectedPriceRanges.some(
 					(range) =>
 						product.regularPrice >= range.start &&
@@ -46,28 +47,29 @@ const ShopProductGrid = ({ data }) => {
 
 		switch (sortOption) {
 			case "LowToHigh":
-				filteredData.sort((a, b) => a.regularPrice - b.regularPrice);
+				filteredList.sort((a, b) => a.regularPrice - b.regularPrice);
 				break;
 			case "HighToLow":
-				filteredData.sort((a, b) => b.regularPrice - a.regularPrice);
+				filteredList.sort((a, b) => b.regularPrice - a.regularPrice);
 				break;
 			case "NewArrivals":
-				filteredData.sort(
-					(a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+				filteredList.sort(
+					(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
 				);
 				break;
 			case "AZ":
-				filteredData.sort((a, b) => a.productName.localeCompare(b.productName));
+				filteredList.sort((a, b) => a.productName.localeCompare(b.productName));
 				break;
 			case "ZA":
-				filteredData.sort((a, b) => b.productName.localeCompare(a.productName));
+				filteredList.sort((a, b) => b.productName.localeCompare(a.productName));
 				break;
 			default:
 				break;
 		}
 
-		setListData(filteredData);
-	}, [selectedBrands, selectedPriceRanges, sortOption, data]);
+		setFilteredData(filteredList);
+		setCurrentPage(1);
+	}, [selectedBrands, selectedPriceRanges, sortOption, listData]);
 
 	const handleCheckBrand = (brand, checked) => {
 		if (checked) {
@@ -94,22 +96,9 @@ const ShopProductGrid = ({ data }) => {
 		}
 	};
 
-	// Pagination logic
 	const startIndex = (currentPage - 1) * itemsPerPage;
 	const endIndex = startIndex + itemsPerPage;
-	const currentItems = listData.slice(startIndex, endIndex);
-
-	const handleNextPage = () => {
-		if (currentPage < totalPages) {
-			setCurrentPage(currentPage + 1);
-		}
-	};
-
-	const handlePreviousPage = () => {
-		if (currentPage > 1) {
-			setCurrentPage(currentPage - 1);
-		}
-	};
+	const currentItems = filteredData.slice(startIndex, endIndex);
 
 	return (
 		<>
@@ -117,7 +106,6 @@ const ShopProductGrid = ({ data }) => {
 				<SportsFitBanner image={"/Shop.png"} />
 			</div>
 			<div className="flex flex-col md:flex-row">
-				{/* Filter Section */}
 				<div className="w-full md:w-1/4 bg-white p-6 shadow-lg rounded-lg">
 					<h2 className="text-lg font-semibold mb-6 border-b pb-2">Filters</h2>
 					<div className="mb-6">
@@ -162,7 +150,6 @@ const ShopProductGrid = ({ data }) => {
 					</div>
 				</div>
 
-				{/* Product Grid */}
 				<div className="w-full md:w-3/4 p-6">
 					<div className="flex justify-between items-center mb-6">
 						<h2 className="text-2xl font-semibold">Products</h2>
@@ -211,42 +198,30 @@ const ShopProductGrid = ({ data }) => {
 											</p>
 										)}
 									</div>
-									<div className="text-center">
-										<p className="text-red-600 font-semibold text-lg sm:text-xl">
-											₹ {product?.regularPrice}
-										</p>
+									<div className="flex items-center justify-center gap-2">
+										{product?.discountedPrice && (
+											<p className="text-black font-semibold">
+												₹ {product?.discountedPrice}
+											</p>
+										)}
+										{product?.discountedPrice && (
+											<PiLineVerticalThin className="text-gray-400" />
+										)}
+
+										<div className="flex items-center gap-1">
+											<p className="text-sm font-medium">Best Price</p>
+										</div>
 									</div>
 								</div>
 							</div>
 						))}
 					</div>
-
-					{/* Pagination Buttons */}
-					<div className="mt-6 flex justify-center">
-						<button
-							className={`px-4 py-2 border rounded ${
-								currentPage === 1 ? "bg-gray-300" : "bg-blue-500 text-white"
-							}`}
-							onClick={handlePreviousPage}
-							disabled={currentPage === 1}
-						>
-							Previous
-						</button>
-						<span className="mx-4">
-							Page {currentPage} of {totalPages}
-						</span>
-						<button
-							className={`px-4 py-2 border rounded ${
-								currentPage === totalPages
-									? "bg-gray-300"
-									: "bg-blue-500 text-white"
-							}`}
-							onClick={handleNextPage}
-							disabled={currentPage === totalPages}
-						>
-							Next
-						</button>
-					</div>
+					<Pagination
+						currentPage={currentPage}
+						totalItems={filteredData.length}
+						itemsPerPage={itemsPerPage}
+						onPageChange={(page) => setCurrentPage(page)}
+					/>
 				</div>
 			</div>
 		</>
