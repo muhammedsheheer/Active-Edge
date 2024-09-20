@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { PiLineVerticalThin } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import SportsFitBanner from "./SportsFitBanner";
-import Pagination from "../common/Pagination";
 
 const ShopProductGrid = ({ data }) => {
 	const [listData, setListData] = useState([]);
@@ -10,10 +9,11 @@ const ShopProductGrid = ({ data }) => {
 	const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
 	const [sortOption, setSortOption] = useState("Recommended");
 
-	const navigate = useNavigate();
-
 	const [currentPage, setCurrentPage] = useState(1);
-	const itemsPerPage = 6;
+	const itemsPerPage = 6; // Number of products per page
+	const totalPages = Math.ceil(listData.length / itemsPerPage);
+
+	const navigate = useNavigate();
 
 	const handleProductDetails = (productId) => {
 		navigate(`/productDetials/${productId}`);
@@ -94,9 +94,22 @@ const ShopProductGrid = ({ data }) => {
 		}
 	};
 
+	// Pagination logic
 	const startIndex = (currentPage - 1) * itemsPerPage;
 	const endIndex = startIndex + itemsPerPage;
 	const currentItems = listData.slice(startIndex, endIndex);
+
+	const handleNextPage = () => {
+		if (currentPage < totalPages) {
+			setCurrentPage(currentPage + 1);
+		}
+	};
+
+	const handlePreviousPage = () => {
+		if (currentPage > 1) {
+			setCurrentPage(currentPage - 1);
+		}
+	};
 
 	return (
 		<>
@@ -198,40 +211,44 @@ const ShopProductGrid = ({ data }) => {
 											</p>
 										)}
 									</div>
-									<div className="flex items-center justify-center gap-2">
-										{product?.discountedPrice && (
-											<p className="text-black font-semibold">
-												₹ {product?.discountedPrice}
-											</p>
-										)}
-										{product?.discountedPrice && (
-											<PiLineVerticalThin className="text-gray-400" />
-										)}
-
-										<div className="flex items-center gap-1">
-											<span className="text-yellow-400 text-xs sm:text-sm font-medium">
-												4.7
-											</span>
-											<svg
-												className="w-4 h-4 text-yellow-400"
-												fill="currentColor"
-												viewBox="0 0 20 20"
-											>
-												<path d="M10 15l-5.878 3.09 1.122-6.545L.366 7.91l6.564-.954L10 .25l3.07 6.705 6.564.954-4.878 4.635L15.878 18z" />
-											</svg>
-										</div>
+									<div className="text-center">
+										<p className="text-red-600 font-semibold text-lg sm:text-xl">
+											₹ {product?.regularPrice}
+										</p>
 									</div>
 								</div>
 							</div>
 						))}
 					</div>
+
+					{/* Pagination Buttons */}
+					<div className="mt-6 flex justify-center">
+						<button
+							className={`px-4 py-2 border rounded ${
+								currentPage === 1 ? "bg-gray-300" : "bg-blue-500 text-white"
+							}`}
+							onClick={handlePreviousPage}
+							disabled={currentPage === 1}
+						>
+							Previous
+						</button>
+						<span className="mx-4">
+							Page {currentPage} of {totalPages}
+						</span>
+						<button
+							className={`px-4 py-2 border rounded ${
+								currentPage === totalPages
+									? "bg-gray-300"
+									: "bg-blue-500 text-white"
+							}`}
+							onClick={handleNextPage}
+							disabled={currentPage === totalPages}
+						>
+							Next
+						</button>
+					</div>
 				</div>
 			</div>
-			<Pagination
-				currentPage={currentPage}
-				totalPages={Math.ceil(listData.length / itemsPerPage)}
-				onPageChange={(page) => setCurrentPage(page)}
-			/>
 		</>
 	);
 };
