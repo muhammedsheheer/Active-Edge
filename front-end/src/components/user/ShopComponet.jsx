@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PiLineVerticalThin } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import SportsFitBanner from "./SportsFitBanner";
-import Pagination from "../common/Pagination";
+import Pagination from "../common/PaginationUserSide";
 
 const ShopProductGrid = ({ data }) => {
 	const [listData, setListData] = useState([]);
