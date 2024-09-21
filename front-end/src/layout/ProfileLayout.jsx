@@ -18,7 +18,7 @@
 // export default ProfileLayout;
 
 import React, { useState } from "react";
-import ProfileSideBar from "../components/user/ProfileSIdeBar";
+import ProfileSideBar from "../components/user/ProfileSideBar";
 import { Outlet } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 
@@ -36,7 +36,10 @@ const ProfileLayout = () => {
 					isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
 				}`}
 			>
-				<ProfileSideBar />
+				<ProfileSideBar
+					isSidebarOpen={isSidebarOpen}
+					toggleSidebar={toggleSidebar}
+				/>
 			</div>
 
 			<button
