@@ -18,7 +18,7 @@
 // export default ProfileLayout;
 
 import React, { useState } from "react";
-import ProfileSideBar from "../components/user/ProfileSIdeBar";
+import ProfileSideBar from "../components/user/ProfileSideBar";
 import { Outlet } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 
@@ -32,7 +32,7 @@ const ProfileLayout = () => {
 	return (
 		<div className="flex flex-col md:flex-row min-h-screen">
 			<div
-				className={`fixed inset-y-0 left-0 transform bg-gray-800 text-white w-64 md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-10 ${
+				className={`fixed inset-y-0 left-0 z-20 transform bg-white shadow-md w-64 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
 					isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
 				}`}
 			>
@@ -40,7 +40,7 @@ const ProfileLayout = () => {
 			</div>
 
 			<button
-				className="md:hidden p-4 fixed top-2 left-2 z-20 bg-gray-800 text-white rounded-full"
+				className="md:hidden p-4 fixed top-2 left-2 z-30 bg-gray-800 text-white rounded-full"
 				onClick={toggleSidebar}
 			>
 				<HiMenu size={24} />
