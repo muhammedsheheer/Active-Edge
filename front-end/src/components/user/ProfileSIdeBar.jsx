@@ -136,7 +136,6 @@ const ProfileSideBar = ({ toggleSidebar }) => {
 		phone: "",
 		email: "",
 	});
-	const [imageData, setImageData] = useState({ dpImage: null });
 
 	const fetchUserDetails = async () => {
 		try {
@@ -147,7 +146,6 @@ const ProfileSideBar = ({ toggleSidebar }) => {
 				email: userData.email,
 				phone: userData.phone,
 			});
-			setImageData({ dpImage: userData.dpImage });
 		} catch (error) {
 			console.log(error);
 		}
@@ -172,8 +170,8 @@ const ProfileSideBar = ({ toggleSidebar }) => {
 	};
 
 	return (
-		<div className="w-full lg:w-72 bg-white shadow-md rounded-lg overflow-hidden p-4 lg:p-6">
-			<div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+		<div className="w-full bg-white shadow-md rounded-lg overflow-hidden p-4">
+			<div className="flex flex-col items-start text-left">
 				<h2 className="text-xl font-semibold text-black">Account Info</h2>
 				<nav className="mt-6 space-y-2 w-full">
 					<Link
