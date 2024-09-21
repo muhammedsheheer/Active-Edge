@@ -16,7 +16,7 @@ const NotFoundPage = () => {
 				Oops! The page you are looking for doesn’t exist.
 			</p>
 			<Link to="/">
-				<button className="bg-gray-900 text-white px-6 py-3 rounded-sm hover:bg-black transition-all">
+				<button className="bg-gray-900 text-white px-6 py-3 rounded-lg hover:bg-black transition-all">
 					Go Back to Home
 				</button>
 			</Link>
