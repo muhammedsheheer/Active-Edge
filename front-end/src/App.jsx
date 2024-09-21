@@ -43,6 +43,7 @@ import Dashboard from "./pages/admin/Dashboard/Dashboard.jsx";
 import OrderFailure from "./pages/user/OrderFailure.jsx";
 import CheckOutWrapper from "./utils/CheckOutRaper.jsx";
 import Brand from "./pages/admin/Brand/Brand.jsx";
+import NotFoundPage from "./pages/user/NotFoundPage.jsx";
 
 function App() {
 	return (
@@ -93,7 +94,7 @@ function App() {
 						<Route path="addNewProduct" element={<ProductForm />} />
 						<Route path="editproduct/:productId" element={<ProductForm />} />
 						<Route path="categorys" element={<Category />} />
-						<Route path="brands" element={<Brand/>}/>
+						<Route path="brands" element={<Brand />} />
 						<Route path="customers" element={<Customers />} />
 						<Route path="orderDetails/:id" element={<OrderDetails />} />
 						<Route path="orders" element={<Order />} />
@@ -104,6 +105,7 @@ function App() {
 						<Route path="bestSelling" element={<BestSelling />} />
 					</Route>
 				</Route>
+				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 		</>
 	);
