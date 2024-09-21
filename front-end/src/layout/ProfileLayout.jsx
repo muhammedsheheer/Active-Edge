@@ -18,7 +18,7 @@
 // export default ProfileLayout;
 
 import React, { useState } from "react";
-import ProfileSideBar from "../components/user/ProfileSideBar";
+import ProfileSideBar from "../components/user/ProfileSIdeBar";
 import { Outlet } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 
