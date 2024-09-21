@@ -1,119 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import { useDispatch } from "react-redux";
-// import { Link, useNavigate } from "react-router-dom";
-// import { logoutUser } from "../../../redux/slices/authSlice";
-// import api from "../../config/axiosConfig";
-// import {
-// 	FaHeart,
-// 	FaShoppingCart,
-// 	FaUser,
-// 	FaShoppingBag,
-// 	FaAddressCard,
-// 	FaWallet,
-// } from "react-icons/fa";
-
-// const ProfileSideBar = () => {
-// 	const navigate = useNavigate();
-// 	const dispatch = useDispatch();
-// 	const [userDetails, setUserDetails] = useState({
-// 		name: "",
-// 		phone: "",
-// 		email: "",
-// 	});
-// 	const [imageData, setImageData] = useState({ dpImage: null });
-
-// 	const fetchUserDetails = async () => {
-// 		try {
-// 			const response = await api.get("/users/getUserDetails");
-// 			const userData = response?.data?.user;
-// 			setUserDetails({
-// 				name: userData.name,
-// 				email: userData.email,
-// 				phone: userData.phone,
-// 			});
-// 			setImageData({ dpImage: userData.dpImage });
-// 		} catch (error) {
-// 			console.log(error);
-// 		}
-// 	};
-
-// 	useEffect(() => {
-// 		fetchUserDetails();
-// 	}, []);
-
-// 	const handleLogOut = async () => {
-// 		try {
-// 			await api.post("/users/logout");
-// 			dispatch(logoutUser());
-// 			navigate("/");
-// 		} catch (error) {
-// 			console.log(error);
-// 		}
-// 	};
-
-// 	return (
-// 		<div className="w-full  lg:w-72 bg-white shadow-md rounded-lg overflow-hidden p-4 lg:p-6">
-// 			<div className="flex flex-col items-center lg:items-center text-center lg:text-left">
-// 				<h2 className="text-xl sm:text-xl font-semibold text-black ">
-// 					Account Info
-// 				</h2>
-// 				<nav className="mt-6 space-y-2 sm:space-y-3 w-full">
-// 					<Link
-// 						to="editProfile"
-// 						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-// 					>
-// 						<FaUser />
-// 						Profile
-// 					</Link>
-// 					<Link
-// 						to="/wishlist"
-// 						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-// 					>
-// 						<FaHeart />
-// 						Wishlist
-// 					</Link>
-// 					<Link
-// 						to="/cart"
-// 						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-// 					>
-// 						<FaShoppingCart />
-// 						Cart
-// 					</Link>
-// 					<Link
-// 						to="address"
-// 						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-// 					>
-// 						<FaAddressCard />
-// 						Address
-// 					</Link>
-// 					<Link
-// 						to="orderHistory"
-// 						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-// 					>
-// 						<FaShoppingBag />
-// 						Orders
-// 					</Link>
-// 					<Link
-// 						to="wallet"
-// 						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-// 					>
-// 						<FaWallet />
-// 						Wallet
-// 					</Link>
-// 				</nav>
-// 				<button
-// 					onClick={handleLogOut}
-// 					className="mt-5 block text-white p-2 rounded-sm bg-black hover:text-gray-700 w-full text-center"
-// 				>
-// 					Logout
-// 				</button>
-// 			</div>
-// 		</div>
-// 	);
-// };
-
-// export default ProfileSideBar;
-
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -128,7 +12,7 @@ import {
 	FaWallet,
 } from "react-icons/fa";
 
-const ProfileSideBar = ({ toggleSidebar }) => {
+const ProfileSideBar = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [userDetails, setUserDetails] = useState({
@@ -136,6 +20,7 @@ const ProfileSideBar = ({ toggleSidebar }) => {
 		phone: "",
 		email: "",
 	});
+	const [imageData, setImageData] = useState({ dpImage: null });
 
 	const fetchUserDetails = async () => {
 		try {
@@ -146,6 +31,7 @@ const ProfileSideBar = ({ toggleSidebar }) => {
 				email: userData.email,
 				phone: userData.phone,
 			});
+			setImageData({ dpImage: userData.dpImage });
 		} catch (error) {
 			console.log(error);
 		}
@@ -165,61 +51,59 @@ const ProfileSideBar = ({ toggleSidebar }) => {
 		}
 	};
 
-	const handleLinkClick = () => {
-		toggleSidebar(); // Close sidebar after link click on mobile
-	};
-
 	return (
-		<div className="w-full bg-white shadow-md rounded-lg overflow-hidden p-4">
-			<div className="flex flex-col items-start text-left">
-				<h2 className="text-xl font-semibold text-black">Account Info</h2>
-				<nav className="mt-6 space-y-2 w-full">
+		<div className="w-full  lg:w-72 bg-white shadow-md rounded-lg overflow-hidden p-4 lg:p-6">
+			<div className="flex flex-col items-center lg:items-center text-center lg:text-left">
+				<h2 className="text-xl sm:text-xl font-semibold text-black ">
+					Account Info
+				</h2>
+				<nav className="mt-6 space-y-2 sm:space-y-3 w-full">
 					<Link
 						to="editProfile"
-						onClick={handleLinkClick}
-						className="flex items-center gap-2 text-black hover:text-gray-700"
+						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
 					>
-						<FaUser /> Profile
+						<FaUser />
+						Profile
 					</Link>
 					<Link
 						to="/wishlist"
-						onClick={handleLinkClick}
-						className="flex items-center gap-2 text-black hover:text-gray-700"
+						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
 					>
-						<FaHeart /> Wishlist
+						<FaHeart />
+						Wishlist
 					</Link>
 					<Link
 						to="/cart"
-						onClick={handleLinkClick}
-						className="flex items-center gap-2 text-black hover:text-gray-700"
+						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
 					>
-						<FaShoppingCart /> Cart
+						<FaShoppingCart />
+						Cart
 					</Link>
 					<Link
 						to="address"
-						onClick={handleLinkClick}
-						className="flex items-center gap-2 text-black hover:text-gray-700"
+						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
 					>
-						<FaAddressCard /> Address
+						<FaAddressCard />
+						Address
 					</Link>
 					<Link
 						to="orderHistory"
-						onClick={handleLinkClick}
-						className="flex items-center gap-2 text-black hover:text-gray-700"
+						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
 					>
-						<FaShoppingBag /> Orders
+						<FaShoppingBag />
+						Orders
 					</Link>
 					<Link
 						to="wallet"
-						onClick={handleLinkClick}
-						className="flex items-center gap-2 text-black hover:text-gray-700"
+						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
 					>
-						<FaWallet /> Wallet
+						<FaWallet />
+						Wallet
 					</Link>
 				</nav>
 				<button
 					onClick={handleLogOut}
-					className="mt-5 w-full text-white p-2 rounded-sm bg-black hover:bg-gray-700"
+					className="mt-5 block text-white p-2 rounded-sm bg-black hover:text-gray-700 w-full text-center"
 				>
 					Logout
 				</button>
