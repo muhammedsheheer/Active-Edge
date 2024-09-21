@@ -48,7 +48,6 @@ const EditProfile = () => {
 		}
 	};
 
-	// Validation
 	const validate = () => {
 		let validationErrors = {};
 
@@ -140,7 +139,6 @@ const EditProfile = () => {
 				</div>
 
 				<div className="space-y-6">
-					{/* Name Input */}
 					<div className="flex flex-col">
 						<label
 							htmlFor="name"
@@ -161,7 +159,6 @@ const EditProfile = () => {
 						{errors.name && <p className="text-red-500 mt-2">{errors.name}</p>}
 					</div>
 
-					{/* Phone Input */}
 					<div className="flex flex-col">
 						<label
 							htmlFor="phone"
@@ -185,7 +182,6 @@ const EditProfile = () => {
 					</div>
 				</div>
 
-				{/* Submit Button */}
 				<button
 					className="mt-8 w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition duration-300 shadow-lg flex justify-center items-center"
 					onClick={handleSubmit}
