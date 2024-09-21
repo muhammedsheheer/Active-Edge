@@ -128,7 +128,7 @@ import {
 	FaWallet,
 } from "react-icons/fa";
 
-const ProfileSideBar = () => {
+const ProfileSideBar = ({ isSidebarOpen, toggleSidebar }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [userDetails, setUserDetails] = useState({
@@ -167,6 +167,12 @@ const ProfileSideBar = () => {
 		}
 	};
 
+	const handleLinkClick = () => {
+		if (isSidebarOpen) {
+			toggleSidebar();
+		}
+	};
+
 	return (
 		<div className="p-4 lg:p-6 w-full lg:w-64 bg-white shadow-md rounded-lg">
 			<div className="flex flex-col items-center lg:items-start text-center lg:text-left">
@@ -174,6 +180,7 @@ const ProfileSideBar = () => {
 				<nav className="mt-6 space-y-3 w-full">
 					<Link
 						to="editProfile"
+						onClick={handleLinkClick}
 						className="text-black hover:text-gray-700 flex items-center gap-2"
 					>
 						<FaUser />
@@ -181,6 +188,7 @@ const ProfileSideBar = () => {
 					</Link>
 					<Link
 						to="/wishlist"
+						onClick={handleLinkClick}
 						className="text-black hover:text-gray-700 flex items-center gap-2"
 					>
 						<FaHeart />
@@ -188,6 +196,7 @@ const ProfileSideBar = () => {
 					</Link>
 					<Link
 						to="/cart"
+						onClick={handleLinkClick}
 						className="text-black hover:text-gray-700 flex items-center gap-2"
 					>
 						<FaShoppingCart />
@@ -195,6 +204,7 @@ const ProfileSideBar = () => {
 					</Link>
 					<Link
 						to="address"
+						onClick={handleLinkClick}
 						className="text-black hover:text-gray-700 flex items-center gap-2"
 					>
 						<FaAddressCard />
@@ -202,6 +212,7 @@ const ProfileSideBar = () => {
 					</Link>
 					<Link
 						to="orderHistory"
+						onClick={handleLinkClick}
 						className="text-black hover:text-gray-700 flex items-center gap-2"
 					>
 						<FaShoppingBag />
@@ -209,6 +220,7 @@ const ProfileSideBar = () => {
 					</Link>
 					<Link
 						to="wallet"
+						onClick={handleLinkClick}
 						className="text-black hover:text-gray-700 flex items-center gap-2"
 					>
 						<FaWallet />
