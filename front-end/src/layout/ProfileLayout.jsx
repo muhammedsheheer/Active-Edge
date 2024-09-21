@@ -31,6 +31,7 @@ const ProfileLayout = () => {
 
 	return (
 		<div className="flex">
+			{/* Mobile menu button */}
 			<button
 				className="md:hidden p-4 fixed top-2 left-2 z-30 bg-gray-800 text-white rounded-full"
 				onClick={toggleSidebar}
@@ -38,6 +39,7 @@ const ProfileLayout = () => {
 				<HiMenu size={24} />
 			</button>
 
+			{/* Sidebar */}
 			<div
 				className={`fixed inset-y-0 left-0 z-20 transform bg-white shadow-md w-64 transition-transform duration-300 ease-in-out ${
 					isSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -46,6 +48,7 @@ const ProfileLayout = () => {
 				<ProfileSideBar toggleSidebar={toggleSidebar} />
 			</div>
 
+			{/* Main content */}
 			<div className="flex flex-col flex-grow ml-0 md:ml-64">
 				<main className="flex-grow bg-gray-50 min-h-screen p-4 md:p-8">
 					<Outlet />
