@@ -1,3 +1,22 @@
+// import React from "react";
+// import ProfileSideBar from "../components/user/ProfileSIdeBar";
+// import { Outlet } from "react-router-dom";
+
+// const ProfileLayout = () => {
+// 	return (
+// 		<div className="  flex">
+// 			<ProfileSideBar />
+// 			<div className="flex flex-col flex-grow ml-20">
+// 				<main className="flex-grow  bg-white min-h-screen">
+// 					<Outlet />
+// 				</main>
+// 			</div>
+// 		</div>
+// 	);
+// };
+
+// export default ProfileLayout;
+
 import React, { useState } from "react";
 import ProfileSideBar from "../components/user/ProfileSIdeBar";
 import { Outlet } from "react-router-dom";
@@ -10,26 +29,27 @@ const ProfileLayout = () => {
 	};
 
 	return (
-		<div className="flex flex-col md:flex-row">
-			<div className="md:hidden bg-gray-800 p-4 flex justify-between items-center">
-				<h2 className="text-white text-xl font-semibold">Profile</h2>
-				<button className="text-white text-xl" onClick={toggleSidebar}>
+		<div className="flex flex-col md:flex-row min-h-screen">
+			<div className="md:hidden bg-blue-600 p-4 flex justify-between items-center shadow-lg">
+				<h2 className="text-white text-2xl font-bold">Profile</h2>
+				<button
+					className="text-white text-3xl focus:outline-none"
+					onClick={toggleSidebar}
+				>
 					☰
 				</button>
 			</div>
 
 			<div
 				className={`${
-					isSidebarOpen ? "block" : "hidden"
-				} md:flex flex-col w-64 md:w-1/4 bg-gray-100 p-4 absolute md:relative z-10 md:static top-0 left-0 min-h-screen transition-all duration-300 ease-in-out`}
+					isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+				} md:translate-x-0 fixed md:relative top-0 left-0 w-64 bg-gray-100 shadow-md md:shadow-none z-30 h-full md:h-auto transition-transform duration-300 ease-in-out`}
 			>
 				<ProfileSideBar />
 			</div>
 
-			<div className="flex flex-col flex-grow md:ml-4">
-				<main className="flex-grow bg-white min-h-screen p-4">
-					<Outlet />
-				</main>
+			<div className="flex-grow bg-gray-50 p-4">
+				<Outlet />
 			</div>
 
 			{isSidebarOpen && (
