@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/slices/authSlice";
 import api from "../../config/axiosConfig";
 import {
@@ -12,7 +12,7 @@ import {
 	FaWallet,
 } from "react-icons/fa";
 
-const ProfileSideBar = () => {
+const ProfileSideBar = ({ closeSidebar }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [userDetails, setUserDetails] = useState({
@@ -52,62 +52,64 @@ const ProfileSideBar = () => {
 	};
 
 	return (
-		<div className="w-full  lg:w-72 bg-white shadow-md rounded-lg overflow-hidden p-4 lg:p-6">
-			<div className="flex flex-col items-center lg:items-center text-center lg:text-left">
-				<h2 className="text-xl sm:text-xl font-semibold text-black ">
-					Account Info
-				</h2>
-				<nav className="mt-6 space-y-2 sm:space-y-3 w-full">
-					<Link
-						to="editProfile"
-						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-					>
-						<FaUser />
-						Profile
-					</Link>
-					<Link
-						to="/wishlist"
-						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-					>
-						<FaHeart />
-						Wishlist
-					</Link>
-					<Link
-						to="/cart"
-						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-					>
-						<FaShoppingCart />
-						Cart
-					</Link>
-					<Link
-						to="address"
-						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-					>
-						<FaAddressCard />
-						Address
-					</Link>
-					<Link
-						to="orderHistory"
-						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-					>
-						<FaShoppingBag />
-						Orders
-					</Link>
-					<Link
-						to="wallet"
-						className="text-black hover:text-gray-700 flex flex-row gap-2 items-center"
-					>
-						<FaWallet />
-						Wallet
-					</Link>
-				</nav>
-				<button
-					onClick={handleLogOut}
-					className="mt-5 block text-white p-2 rounded-sm bg-black hover:text-gray-700 w-full text-center"
+		<div className="w-full h-full p-6 bg-white shadow-lg rounded-lg">
+			<h2 className="text-xl font-semibold mb-6">Account Info</h2>
+			<nav className="space-y-4">
+				<Link
+					to="editProfile"
+					onClick={closeSidebar}
+					className="flex items-center gap-2"
 				>
-					Logout
-				</button>
-			</div>
+					<FaUser />
+					Profile
+				</Link>
+				<Link
+					to="/wishlist"
+					onClick={closeSidebar}
+					className="flex items-center gap-2"
+				>
+					<FaHeart />
+					Wishlist
+				</Link>
+				<Link
+					to="/cart"
+					onClick={closeSidebar}
+					className="flex items-center gap-2"
+				>
+					<FaShoppingCart />
+					Cart
+				</Link>
+				<Link
+					to="address"
+					onClick={closeSidebar}
+					className="flex items-center gap-2"
+				>
+					<FaAddressCard />
+					Address
+				</Link>
+				<Link
+					to="orderHistory"
+					onClick={closeSidebar}
+					className="flex items-center gap-2"
+				>
+					<FaShoppingBag />
+					Orders
+				</Link>
+				<Link
+					to="wallet"
+					onClick={closeSidebar}
+					className="flex items-center gap-2"
+				>
+					<FaWallet />
+					Wallet
+				</Link>
+			</nav>
+			<button
+				onClick={handleLogOut}
+				className="mt-6 w-full bg-black text-white py-2 rounded-md"
+			>
+				Logout
+			</button>
 		</div>
 	);
 };

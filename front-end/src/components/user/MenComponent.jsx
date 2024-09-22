@@ -24,14 +24,12 @@ const MenProductGrid = ({ data }) => {
 	useEffect(() => {
 		let filteredData = [...data];
 
-		// Filter by brand
 		if (selectedBrands.length > 0) {
 			filteredData = filteredData.filter((product) =>
 				selectedBrands.includes(product?.brand?.brandName)
 			);
 		}
 
-		// Filter by price range
 		if (selectedPriceRanges.length > 0) {
 			filteredData = filteredData.filter((product) =>
 				selectedPriceRanges.some(
@@ -42,7 +40,6 @@ const MenProductGrid = ({ data }) => {
 			);
 		}
 
-		// Apply sorting
 		switch (sortOption) {
 			case "LowToHigh":
 				filteredData.sort((a, b) => a.regularPrice - b.regularPrice);
@@ -161,7 +158,7 @@ const MenProductGrid = ({ data }) => {
 						</select>
 					</div>
 
-					<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6">
 						{listData.map((product, index) => (
 							<div key={index}>
 								<div

@@ -341,17 +341,17 @@ const CartCard = () => {
 					</div>
 				</div>
 			) : (
-				<div className="flex flex-col items-center justify-center  bg-white px-4">
-					<h2 className="text-lg font-bold text-gray-800 mb-2">
+				<div className="flex flex-col items-center justify-center bg-white px-4 py-6">
+					<h2 className="text-lg font-bold text-gray-800 mb-2 text-center">
 						Your cart is empty
 					</h2>
-					<p className="text-gray-500 text-center mb-6">
+					<p className="text-gray-500 text-center mb-6 px-2">
 						Just relax, let us help you find some first-class products.
 					</p>
 					<img
 						src={"/EmptycartImage.png"}
-						alt="Empty Wishlist"
-						className="w-96 h-56 mb-6"
+						alt="Empty Cart"
+						className="w-full max-w-xs h-auto mb-6"
 					/>
 					<button
 						onClick={handleShopNow}

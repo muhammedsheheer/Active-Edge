@@ -5,7 +5,6 @@ import appRoutes from "./routes/apiRoutes.js";
 import cookieParser from "cookie-parser";
 import connectDb from "./config/mongodb.js";
 import morgan from "morgan";
-import path from "path";
 
 const PORT = process.env.PORT || 5000;
 connectDb();

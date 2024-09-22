@@ -48,7 +48,7 @@ const HomePage = () => {
 			</div>
 			<ShopNowCard />
 
-			<div className="mt-40">
+			<div className="mt-40 hidden lg:block">
 				<img className="w-auto h-auto" src="/free 1.png" alt="" />
 			</div>
 		</div>
