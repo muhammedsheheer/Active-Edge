@@ -38,7 +38,6 @@ const PaymentOptions = () => {
 	const items = useSelector((state) => state.cart.cartItems.items);
 
 	const location = useLocation();
-	console.log("location", location.state);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
