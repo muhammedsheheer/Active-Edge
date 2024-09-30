@@ -4,7 +4,7 @@ import store from "../../redux/store/store";
 
 const baseURL =
 	import.meta.env.VITE_NODE_ENV === "production"
-		? "http://api.activeedge.shop/api"
+		? "https://activeedge.shop/api"
 		: "http://localhost:5000/api";
 
 const api = axios.create({
