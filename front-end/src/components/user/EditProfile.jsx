@@ -50,16 +50,16 @@ const EditProfile = () => {
 
 	const validate = () => {
 		let validationErrors = {};
-
-		if (!name || name.includes(" ")) {
-			validationErrors.name = "Name is required and cannot contain spaces";
+		const nameRegex = /^[a-zA-Z]+$/;
+		if (!name || name.includes(" ") || !nameRegex.test(name)) {
+			validationErrors.name =
+				"Name is required, cannot contain spaces, and should only contain letters";
 		}
-
-		if (!phone) {
+		const phoneRegex = /^[0-9]{8,10}$/;
+		if (!phone || !phoneRegex.test(phone)) {
 			validationErrors.phone =
-				"Phone number is required and cannot contain spaces";
+				"Phone number must be between 8 to 10 digits and contain only numbers";
 		}
-
 		setErrors(validationErrors);
 		return Object.keys(validationErrors).length === 0;
 	};
@@ -79,7 +79,7 @@ const EditProfile = () => {
 			});
 			toast.success(response.data.message);
 		} catch (error) {
-			toast.error(error?.response?.data?.message);
+			console.log(error.message);
 		} finally {
 			setIsSaving(false);
 		}

@@ -17,8 +17,10 @@ const OrderHistory = () => {
 		try {
 			const response = await api.get("/order/get-orders");
 			console.log("the order", response.data.order);
-
-			setOrders(response.data.order);
+			const sortedOrders = response.data.order.sort(
+				(a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+			);
+			setOrders(sortedOrders);
 		} catch (error) {
 			console.error("Error fetching orders:", error.message);
 		} finally {
